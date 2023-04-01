@@ -177,6 +177,10 @@ type Reader interface {
 	// Returned values are commented in the interface doc comment block.
 	GetEC2InternetGateways(ctx context.Context, input *ec2.DescribeInternetGatewaysInput) ([]*ec2.InternetGateway, error)
 
+	// GetEC2NetworkAcls returns the EC2 Network ACLs on the given input
+	// Returned values are commented in the interface doc comment block.
+	GetEC2NetworkAcls(ctx context.Context, input *ec2.DescribeNetworkAclsInput) ([]*ec2.NetworkAcl, error)
+
 	// GetKeyPairs returns all KeyPairs based on the input given.
 	// Returned values are commented in the interface doc comment block.
 	GetKeyPairs(ctx context.Context, input *ec2.DescribeKeyPairsInput) ([]*ec2.KeyPairInfo, error)
@@ -1398,6 +1402,37 @@ func (c *connector) GetEC2InternetGateways(ctx context.Context, input *ec2.Descr
 		hasNextToken = o.NextToken != nil
 
 		opt = append(opt, o.InternetGateways...)
+
+	}
+
+	return opt, nil
+}
+
+func (c *connector) GetEC2NetworkAcls(ctx context.Context, input *ec2.DescribeNetworkAclsInput) ([]*ec2.NetworkAcl, error) {
+	if c.svc.ec2 == nil {
+		c.svc.ec2 = ec2.New(c.svc.session)
+	}
+
+	opt := make([]*ec2.NetworkAcl, 0)
+
+	hasNextToken := true
+	for hasNextToken {
+		o, err := c.svc.ec2.DescribeNetworkAclsWithContext(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+		if o.NetworkAcls == nil {
+			hasNextToken = false
+			continue
+		}
+
+		if input == nil {
+			input = &ec2.DescribeNetworkAclsInput{}
+		}
+		input.NextToken = o.NextToken
+		hasNextToken = o.NextToken != nil
+
+		opt = append(opt, o.NetworkAcls...)
 
 	}
 

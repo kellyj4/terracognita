@@ -349,6 +349,18 @@ var (
 			`,
 		},
 		Function{
+			FnName:          "GetEC2NetworkAcls",
+			Entity:          "NetworkAcls",
+			FnAttributeList: "NetworkAcls",
+			SingularEntity:  "NetworkAcl",
+			Prefix:          "Describe",
+			Service:         "ec2",
+			Documentation: `
+			// GetEC2NetworkAcls returns the EC2 Network Acls on the given input
+			// Returned values are commented in the interface doc comment block.
+			`,
+		},
+		Function{
 			SingularEntity:   "KeyPairInfo",
 			HasNotPagination: true,
 			Entity:           "KeyPairs",

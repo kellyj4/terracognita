@@ -84,6 +84,7 @@ const (
 	ECSCluster
 	ECSService
 	ECSTaskDefinition
+	EC2NetworkAcl
 	EC2TransitGateway
 	EC2TransitGatewayVPCAttachment
 	EC2TransitGatewayRouteTable
@@ -225,6 +226,7 @@ var (
 		ECSCluster:                                 cacheECSClusters,
 		ECSService:                                 ecsServices,
 		ECSTaskDefinition:                          ecsTaskDefinitions,
+		EC2NetworkAcl:                              ec2NetworkAcl,
 		EC2TransitGateway:                          ec2TransitGateways,
 		EC2TransitGatewayVPCAttachment:             ec2TransitGatewayVPCAttachment,
 		EC2TransitGatewayRouteTable:                cacheTransitGatewayRouteTables,
@@ -1270,6 +1272,27 @@ func ecsTaskDefinitions(ctx context.Context, a *aws, resourceType string, filter
 
 	for _, taskDefinitionArn := range ecsTaskDefinitionArns {
 		r, err := initializeResource(a, *taskDefinitionArn, resourceType)
+		if err != nil {
+			return nil, err
+		}
+
+		resources = append(resources, r)
+	}
+
+	return resources, nil
+}
+
+func ec2NetworkAcl(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+	networkACL, err := a.awsr.GetEC2NetworkAcls(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resources := make([]provider.Resource, 0)
+
+	for _, i := range networkACL {
+
+		r, err := initializeResource(a, *i.NetworkAclId, resourceType)
 		if err != nil {
 			return nil, err
 		}

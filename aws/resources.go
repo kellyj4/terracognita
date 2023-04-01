@@ -1297,7 +1297,9 @@ func networkAcl(ctx context.Context, a *aws, resourceType string, filters *filte
 			return nil, err
 		}
 
-		resources = append(resources, r)
+		if !*i.IsDefault {
+		   resources = append(resources, r)
+		}
 	}
 
 	return resources, nil

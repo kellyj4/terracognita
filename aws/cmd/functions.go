@@ -349,7 +349,7 @@ var (
 			`,
 		},
 		Function{
-			FnName:          "GetEC2NetworkAcls",
+			FnName:          "NetworkAcls",
 			Entity:          "NetworkAcls",
 			FnAttributeList: "NetworkAcls",
 			SingularEntity:  "NetworkAcl",

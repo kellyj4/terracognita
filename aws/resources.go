@@ -84,7 +84,6 @@ const (
 	ECSCluster
 	ECSService
 	ECSTaskDefinition
-	EC2NetworkAcl
 	EC2TransitGateway
 	EC2TransitGatewayVPCAttachment
 	EC2TransitGatewayRouteTable
@@ -150,6 +149,7 @@ const (
 	MediaStoreContainer
 	MQBroker
 	NatGateway
+	NetworkAcl
 	NeptuneCluster
 	RDSCluster
 	RDSGlobalCluster
@@ -226,7 +226,6 @@ var (
 		ECSCluster:                                 cacheECSClusters,
 		ECSService:                                 ecsServices,
 		ECSTaskDefinition:                          ecsTaskDefinitions,
-		EC2NetworkAcl:                              ec2NetworkAcl,
 		EC2TransitGateway:                          ec2TransitGateways,
 		EC2TransitGatewayVPCAttachment:             ec2TransitGatewayVPCAttachment,
 		EC2TransitGatewayRouteTable:                cacheTransitGatewayRouteTables,
@@ -289,6 +288,7 @@ var (
 		MediaStoreContainer:                        mediaStoreContainers,
 		MQBroker:                                   mqBrokers,
 		NatGateway:                                 natGateways,
+		NetworkAcl:                                 networkAcl,
 		NeptuneCluster:                             neptuneClusters,
 		RDSCluster:                                 rdsClusters,
 		RDSGlobalCluster:                           rdsGlobalClusters,
@@ -1282,8 +1282,8 @@ func ecsTaskDefinitions(ctx context.Context, a *aws, resourceType string, filter
 	return resources, nil
 }
 
-func ec2NetworkAcl(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
-	networkACL, err := a.awsr.GetEC2NetworkAcls(ctx, nil)
+func networkAcl(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+	networkACL, err := a.awsr.NetworkAcls(ctx, nil)
 	if err != nil {
 		return nil, err
 	}

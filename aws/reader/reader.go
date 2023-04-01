@@ -177,9 +177,9 @@ type Reader interface {
 	// Returned values are commented in the interface doc comment block.
 	GetEC2InternetGateways(ctx context.Context, input *ec2.DescribeInternetGatewaysInput) ([]*ec2.InternetGateway, error)
 
-	// GetEC2NetworkAcls returns the EC2 Network ACLs on the given input
+	// GetEC2NetworkAcls returns the EC2 Network Acls on the given input
 	// Returned values are commented in the interface doc comment block.
-	GetEC2NetworkAcls(ctx context.Context, input *ec2.DescribeNetworkAclsInput) ([]*ec2.NetworkAcl, error)
+	NetworkAcls(ctx context.Context, input *ec2.DescribeNetworkAclsInput) ([]*ec2.NetworkAcl, error)
 
 	// GetKeyPairs returns all KeyPairs based on the input given.
 	// Returned values are commented in the interface doc comment block.
@@ -1408,7 +1408,7 @@ func (c *connector) GetEC2InternetGateways(ctx context.Context, input *ec2.Descr
 	return opt, nil
 }
 
-func (c *connector) GetEC2NetworkAcls(ctx context.Context, input *ec2.DescribeNetworkAclsInput) ([]*ec2.NetworkAcl, error) {
+func (c *connector) NetworkAcls(ctx context.Context, input *ec2.DescribeNetworkAclsInput) ([]*ec2.NetworkAcl, error) {
 	if c.svc.ec2 == nil {
 		c.svc.ec2 = ec2.New(c.svc.session)
 	}

@@ -106,7 +106,6 @@ const (
 	ELB
 	EMRCluster
 	FsxLustreFileSystem
-	Firewalls
 	GlueCatalogDatabase
 	GlueCatalogTable
 	IAMAccessKey
@@ -151,6 +150,7 @@ const (
 	MQBroker
 	NatGateway
 	NetworkAcl
+	NetworkfirewallFirewall
 	NeptuneCluster
 	RDSCluster
 	RDSGlobalCluster
@@ -249,7 +249,6 @@ var (
 		ELB:                                        elbs,
 		EMRCluster:                                 emrClusters,
 		FsxLustreFileSystem:                        fsxLustreFileSystems,
-		Firewalls:                        			networkfirewallFirewalls,
 		GlueCatalogDatabase:                        cacheGlueDatabases,
 		GlueCatalogTable:                           glueCatalogTables,
 		IAMAccessKey:                               iamAccessKeys,
@@ -291,6 +290,7 @@ var (
 		MQBroker:                                   mqBrokers,
 		NatGateway:                                 natGateways,
 		NetworkAcl:                                 networkAcl,
+		NetworkfirewallFirewall:                    networkfirewallFirewalls,
 		NeptuneCluster:                             neptuneClusters,
 		RDSCluster:                                 rdsClusters,
 		RDSGlobalCluster:                           rdsGlobalClusters,
@@ -2636,7 +2636,7 @@ func natGateways(ctx context.Context, a *aws, resourceType string, filters *filt
 }
 
 func networkfirewallFirewalls(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
-	networkfirewallsFirewall, err := a.awsr.GetFirewalls(ctx, nil)
+	networkfirewallsFirewall, err := a.awsr.GetNetworkfirewallFirewall(ctx, nil)
 	if err != nil {
 		return nil, err
 	}

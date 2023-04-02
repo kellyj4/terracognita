@@ -160,7 +160,7 @@ type Reader interface {
 
 	// GetFirewalls returns the firewall on the given input
 	// Returned values are commented in the interface doc comment block.
-	GetFirewalls(ctx context.Context, input *networkfirewall.ListFirewallsInput) ([]*networkfirewall.FirewallMetadata, error)
+	GetNetworkfirewallFirewall(ctx context.Context, input *networkfirewall.ListFirewallsInput) ([]*networkfirewall.FirewallMetadata, error)
 
 	// GetAddresses returns all EC2 Addresses based on the input given.
 	// Returned values are commented in the interface doc comment block.
@@ -1263,7 +1263,7 @@ func (c *connector) GetDynamodbTables(ctx context.Context, input *dynamodb.ListT
 	return opt, nil
 }
 
-func (c *connector) GetFirewalls(ctx context.Context, input *networkfirewall.ListFirewallsInput) ([]*networkfirewall.FirewallMetadata, error) {
+func (c *connector) GetNetworkfirewallFirewall(ctx context.Context, input *networkfirewall.ListFirewallsInput) ([]*networkfirewall.FirewallMetadata, error) {
 	if c.svc.networkfirewall == nil {
 		c.svc.networkfirewall = networkfirewall.New(c.svc.session)
 	}

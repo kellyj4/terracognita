@@ -84,6 +84,7 @@ const (
 	ECSCluster
 	ECSService
 	ECSTaskDefinition
+	EC2ManagedPrefixList
 	EC2TransitGateway
 	EC2TransitGatewayVPCAttachment
 	EC2TransitGatewayRouteTable
@@ -151,7 +152,7 @@ const (
 	NatGateway
 	NetworkAcl
 	NetworkfirewallFirewall
-	NetworkfirewallFirewallPolices
+	NetworkfirewallFirewallPolicies
 	NetworkfirewallRuleGroup
 	NeptuneCluster
 	RDSCluster
@@ -230,6 +231,7 @@ var (
 		ECSCluster:                                 cacheECSClusters,
 		ECSService:                                 ecsServices,
 		ECSTaskDefinition:                          ecsTaskDefinitions,
+		EC2ManagedPrefixList:                       ec2ManagedPrefixList,
 		EC2TransitGateway:                          ec2TransitGateways,
 		EC2TransitGatewayVPCAttachment:             ec2TransitGatewayVPCAttachment,
 		EC2TransitGatewayRouteTable:                cacheTransitGatewayRouteTables,
@@ -294,7 +296,7 @@ var (
 		NatGateway:                                 natGateways,
 		NetworkAcl:                                 networkAcl,
 		NetworkfirewallFirewall:                    networkfirewallFirewalls,
-		NetworkfirewallFirewallPolices:             networkfirewallFirewallPolices,
+		NetworkfirewallFirewallPolicies:            networkfirewallFirewallPolicies,
 	    NetworkfirewallRuleGroup:                   networkfirewallRuleGroup,
 		NeptuneCluster:                             neptuneClusters,
 		RDSCluster:                                 rdsClusters,
@@ -1308,6 +1310,26 @@ func networkAcl(ctx context.Context, a *aws, resourceType string, filters *filte
 		if !*i.IsDefault {
 		   resources = append(resources, r)
 		}
+	}
+
+	return resources, nil
+}
+
+func ec2ManagedPrefixList(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+	managedPrefixList, err := a.awsr.GetManagedPrefixLists(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resources := make([]provider.Resource, 0)
+
+	for _, i := range managedPrefixList {
+		r, err := initializeResource(a, *i.PrefixListId, resourceType)
+		if err != nil {
+			return nil, err
+		}
+
+		resources = append(resources, r)
 	}
 
 	return resources, nil
@@ -2659,7 +2681,7 @@ func networkfirewallFirewalls(ctx context.Context, a *aws, resourceType string, 
 	return resources, nil
 }
 
-func networkfirewallFirewallPolices(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+func networkfirewallFirewallPolicies(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
 	networkfirewallsFirewall, err := a.awsr.GetNetworkfirewallFirewallPolicies(ctx, nil)
 	if err != nil {
 		return nil, err

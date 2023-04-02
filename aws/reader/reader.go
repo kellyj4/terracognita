@@ -250,6 +250,10 @@ type Reader interface {
 	// Returned values are commented in the interface doc comment block.
 	GetRouteTables(ctx context.Context, input *ec2.DescribeRouteTablesInput) ([]*ec2.RouteTable, error)
 
+	// GetManagedPrefixLists returns the ec2 Managed Prefix Lists on the given input
+	// Returned values are commented in the interface doc comment block.
+	GetManagedPrefixLists(ctx context.Context, input *ec2.DescribePrefixListsInput) ([]*ec2.PrefixList, error)
+
 	// GetTransitGateways returns the ec2 Transit Gateways on the given input
 	// Returned values are commented in the interface doc comment block.
 	GetTransitGateways(ctx context.Context, input *ec2.DescribeTransitGatewaysInput) ([]*ec2.TransitGateway, error)
@@ -1970,6 +1974,37 @@ func (c *connector) GetRouteTables(ctx context.Context, input *ec2.DescribeRoute
 		hasNextToken = false
 
 		opt = append(opt, o.RouteTables...)
+
+	}
+
+	return opt, nil
+}
+
+func (c *connector) GetManagedPrefixLists(ctx context.Context, input *ec2.DescribePrefixListsInput) ([]*ec2.PrefixList, error) {
+	if c.svc.ec2 == nil {
+		c.svc.ec2 = ec2.New(c.svc.session)
+	}
+
+	opt := make([]*ec2.PrefixList, 0)
+
+	hasNextToken := true
+	for hasNextToken {
+		o, err := c.svc.ec2.DescribePrefixListsWithContext(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+		if o.PrefixLists == nil {
+			hasNextToken = false
+			continue
+		}
+
+		if input == nil {
+			input = &ec2.DescribePrefixListsInput{}
+		}
+		input.NextToken = o.NextToken
+		hasNextToken = o.NextToken != nil
+
+		opt = append(opt, o.PrefixLists...)
 
 	}
 

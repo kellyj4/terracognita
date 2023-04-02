@@ -76,7 +76,6 @@ const (
 	DBParameterGroup
 	DBSubnetGroup
 	DirectoryServiceDirectory
-	DhcpOptions
 	DmsReplicationInstance
 	DXGateway
 	DynamodbGlobalTable
@@ -187,6 +186,7 @@ const (
 	Subnet
 	VolumeAttachment
 	VPC
+	VPCDhcpOptions
 	VPCEndpoint
 	VPCPeeringConnection
 	VPNGateway
@@ -221,7 +221,6 @@ var (
 		DBParameterGroup:               dbParameterGroups,
 		DBSubnetGroup:                  dbSubnetGroups,
 		DirectoryServiceDirectory:      directoryServiceDirectories,
-		DhcpOptions:                    vpcdhcpOptions,
 		DmsReplicationInstance:         dmsReplicationInstances,
 		DXGateway:                      dxGateways,
 		DynamodbGlobalTable:            dynamodbGlobalTables,
@@ -329,6 +328,7 @@ var (
 		VolumeAttachment:             volumeAttachments,
 		VPCPeeringConnection:         vpcPeeringConnections,
 		VPC:                          vpcs,
+		VPCDhcpOptions:               vpcdhcpOptions,
 		VPCEndpoint:                  vpcEndpoints,
 		VPNGateway:                   vpnGateways,
 	}

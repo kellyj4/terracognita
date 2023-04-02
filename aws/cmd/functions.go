@@ -294,7 +294,7 @@ var (
 		},
 		Function{
 			FnName:						"GetFirewalls",
-			Entity:                     "Firewalls",
+			Entity:                     "NetworkFirewallFirewall",
 			FnAttributeList:            "Firewalls",
 			FnOutput:                   "networkfirewall.FirewallMetadata",
 			Prefix:                     "List",

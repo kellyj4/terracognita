@@ -293,36 +293,36 @@ var (
 			`,
 		},
 		Function{
-			FnName:						"GetNetworkfirewallFirewall",
-			Entity:                     "Firewalls",
-			FnAttributeList:            "Firewalls",
-			FnOutput:                   "networkfirewall.FirewallMetadata",
-			Prefix:                     "List",
-			Service:                    "networkfirewall",
+			FnName:          "GetNetworkfirewallFirewall",
+			Entity:          "Firewalls",
+			FnAttributeList: "Firewalls",
+			FnOutput:        "networkfirewall.FirewallMetadata",
+			Prefix:          "List",
+			Service:         "networkfirewall",
 			Documentation: `
 			// GetFirewalls returns the firewall on the given input
 			// Returned values are commented in the interface doc comment block.
 			`,
 		},
 		Function{
-			FnName:						"GetNetworkfirewallFirewallPolicies",
-			Entity:                     "FirewallPolicies",
-			FnAttributeList:            "FirewallPolicies",
-			FnOutput:                   "networkfirewall.FirewallPolicyMetadata",
-			Prefix:                     "List",
-			Service:                    "networkfirewall",
+			FnName:          "GetNetworkfirewallFirewallPolicies",
+			Entity:          "FirewallPolicies",
+			FnAttributeList: "FirewallPolicies",
+			FnOutput:        "networkfirewall.FirewallPolicyMetadata",
+			Prefix:          "List",
+			Service:         "networkfirewall",
 			Documentation: `
 			// GetFirewallPolicies returns the firewall policies on the given input
 			// Returned values are commented in the interface doc comment block.
 			`,
 		},
 		Function{
-			FnName:						"GetNetworkfirewallRuleGroup",
-			Entity:                     "RuleGroups",
-			FnAttributeList:            "RuleGroups",
-			FnOutput:                   "networkfirewall.RuleGroupMetadata",
-			Prefix:                     "List",
-			Service:                    "networkfirewall",
+			FnName:          "GetNetworkfirewallRuleGroup",
+			Entity:          "RuleGroups",
+			FnAttributeList: "RuleGroups",
+			FnOutput:        "networkfirewall.RuleGroupMetadata",
+			Prefix:          "List",
+			Service:         "networkfirewall",
 			Documentation: `
 			// GetFirewallPolicies returns the firewall policies on the given input
 			// Returned values are commented in the interface doc comment block.
@@ -492,6 +492,16 @@ var (
 			`,
 		},
 		Function{
+			Entity:          "DhcpOptions",
+			Service:         "ec2",
+			FnOutput:        "ec2.DhcpOptions",
+			Prefix:          "Describe",
+			Documentation: `
+			// DhcpOptions returns the VPC DHCP options sets on the given input
+			// Returned values are commented in the interface doc comment block.
+			`,
+		},
+		Function{
 			Entity:  "VpcPeeringConnections",
 			Prefix:  "Describe",
 			Service: "ec2",
@@ -540,9 +550,9 @@ var (
 			Prefix:  "Describe",
 			Service: "ec2",
 			Documentation: `
-			// GetTransitGateways returns the ec2 Transit Gateway VPC Attachments on the given input
-			// Returned values are commented in the interface doc comment block.
-			`,
+				// GetTransitGateways returns the ec2 Transit Gateway VPC Attachments on the given input
+				// Returned values are commented in the interface doc comment block.
+				`,
 		},
 		Function{
 			FnName:  "GetTransitGatewayRouteTables",
@@ -550,9 +560,9 @@ var (
 			Prefix:  "Describe",
 			Service: "ec2",
 			Documentation: `
-			// GetTransitGateways returns the ec2 Transit Gateway Route Tables on the given input
-			// Returned values are commented in the interface doc comment block.
-			`,
+				// GetTransitGateways returns the ec2 Transit Gateway Route Tables on the given input
+				// Returned values are commented in the interface doc comment block.
+				`,
 		},
 		Function{
 			FnName:  "GetTransitGatewayMulticast",
@@ -560,9 +570,9 @@ var (
 			Prefix:  "Describe",
 			Service: "ec2",
 			Documentation: `
-			// GetTransitGateways returns the ec2 Transit Gateway Multicasts on the given input
-			// Returned values are commented in the interface doc comment block.
-			`,
+				// GetTransitGateways returns the ec2 Transit Gateway Multicasts on the given input
+				// Returned values are commented in the interface doc comment block.
+				`,
 		},
 		Function{
 			FnName:  "GetTransitGatewayPeeringAttachments",
@@ -570,9 +580,9 @@ var (
 			Prefix:  "Describe",
 			Service: "ec2",
 			Documentation: `
-			// GetTransitGatewayPeeringAttachments returns the ec2 Transit Gateway Peering Attachments on the given input
-			// Returned values are commented in the interface doc comment block.
-			`,
+				// GetTransitGatewayPeeringAttachments returns the ec2 Transit Gateway Peering Attachments on the given input
+				// Returned values are commented in the interface doc comment block.
+				`,
 		},
 		Function{
 			FnName:  "GetTransitGatewayPrefixListReference",
@@ -580,9 +590,9 @@ var (
 			Prefix:  "Get",
 			Service: "ec2",
 			Documentation: `
-			// GetTransitGatewayPrefixListReference returns the ec2 Transit Gateway Prefix List References on the given input
-			// Returned values are commented in the interface doc comment block.
-			`,
+				// GetTransitGatewayPrefixListReference returns the ec2 Transit Gateway Prefix List References on the given input
+				// Returned values are commented in the interface doc comment block.
+				`,
 		},
 		Function{
 			FnName:           "GetTransitGatewayRoutes",

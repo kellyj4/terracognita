@@ -234,6 +234,10 @@ type Reader interface {
 	// Returned values are commented in the interface doc comment block.
 	GetVpcs(ctx context.Context, input *ec2.DescribeVpcsInput) ([]*ec2.Vpc, error)
 
+	// DhcpOptions returns the VPC DHCP options sets on the given input
+	// Returned values are commented in the interface doc comment block.
+	GetDhcpOptions(ctx context.Context, input *ec2.DescribeDhcpOptionsInput) ([]*ec2.DhcpOptions, error)
+
 	// GetVpcPeeringConnections returns all VpcPeeringConnections based on the input given.
 	// Returned values are commented in the interface doc comment block.
 	GetVpcPeeringConnections(ctx context.Context, input *ec2.DescribeVpcPeeringConnectionsInput) ([]*ec2.VpcPeeringConnection, error)
@@ -1850,6 +1854,37 @@ func (c *connector) GetVpcs(ctx context.Context, input *ec2.DescribeVpcsInput) (
 		hasNextToken = o.NextToken != nil
 
 		opt = append(opt, o.Vpcs...)
+
+	}
+
+	return opt, nil
+}
+
+func (c *connector) GetDhcpOptions(ctx context.Context, input *ec2.DescribeDhcpOptionsInput) ([]*ec2.DhcpOptions, error) {
+	if c.svc.ec2 == nil {
+		c.svc.ec2 = ec2.New(c.svc.session)
+	}
+
+	opt := make([]*ec2.DhcpOptions, 0)
+
+	hasNextToken := true
+	for hasNextToken {
+		o, err := c.svc.ec2.DescribeDhcpOptionsWithContext(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+		if o.DhcpOptions == nil {
+			hasNextToken = false
+			continue
+		}
+
+		if input == nil {
+			input = &ec2.DescribeDhcpOptionsInput{}
+		}
+		input.NextToken = o.NextToken
+		hasNextToken = o.NextToken != nil
+
+		opt = append(opt, o.DhcpOptions...)
 
 	}
 

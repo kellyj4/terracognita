@@ -76,6 +76,7 @@ const (
 	DBParameterGroup
 	DBSubnetGroup
 	DirectoryServiceDirectory
+	DhcpOptions
 	DmsReplicationInstance
 	DXGateway
 	DynamodbGlobalTable
@@ -219,6 +220,7 @@ var (
 		DBParameterGroup:               dbParameterGroups,
 		DBSubnetGroup:                  dbSubnetGroups,
 		DirectoryServiceDirectory:      directoryServiceDirectories,
+		DhcpOptions:                    dhcpOptions,
 		DmsReplicationInstance:         dmsReplicationInstances,
 		DXGateway:                      dxGateways,
 		DynamodbGlobalTable:            dynamodbGlobalTables,
@@ -3350,6 +3352,25 @@ func vpcEndpoints(ctx context.Context, a *aws, resourceType string, filters *fil
 	resources := make([]provider.Resource, 0)
 	for _, v := range vpcsedp {
 		r, err := initializeResource(a, *v.VpcEndpointId, resourceType)
+		if err != nil {
+			return nil, err
+		}
+		resources = append(resources, r)
+	}
+
+	return resources, nil
+}
+
+func dhcpOptions(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+
+	dhcpOption, err := a.awsr.GetDhcpOptions(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resources := make([]provider.Resource, 0)
+	for _, v := range dhcpOption {
+		r, err := initializeResource(a, *v.DhcpOptionsId, resourceType)
 		if err != nil {
 			return nil, err
 		}

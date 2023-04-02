@@ -221,7 +221,7 @@ var (
 		DBParameterGroup:               dbParameterGroups,
 		DBSubnetGroup:                  dbSubnetGroups,
 		DirectoryServiceDirectory:      directoryServiceDirectories,
-		DhcpOptions:                    dhcpOptions,
+		DhcpOptions:                    vpcdhcpOptions,
 		DmsReplicationInstance:         dmsReplicationInstances,
 		DXGateway:                      dxGateways,
 		DynamodbGlobalTable:            dynamodbGlobalTables,
@@ -3363,7 +3363,7 @@ func vpcEndpoints(ctx context.Context, a *aws, resourceType string, filters *fil
 	return resources, nil
 }
 
-func dhcpOptions(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+func vpcdhcpOptions(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
 
 	dhcpOption, err := a.awsr.GetVpcDhcpOptions(ctx, nil)
 	if err != nil {

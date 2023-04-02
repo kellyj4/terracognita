@@ -236,7 +236,7 @@ type Reader interface {
 
 	// DhcpOptions returns the VPC DHCP options sets on the given input
 	// Returned values are commented in the interface doc comment block.
-	GetDhcpOptions(ctx context.Context, input *ec2.DescribeDhcpOptionsInput) ([]*ec2.DhcpOptions, error)
+	GetVpcDhcpOptions(ctx context.Context, input *ec2.DescribeDhcpOptionsInput) ([]*ec2.DhcpOptions, error)
 
 	// GetVpcPeeringConnections returns all VpcPeeringConnections based on the input given.
 	// Returned values are commented in the interface doc comment block.
@@ -1860,7 +1860,7 @@ func (c *connector) GetVpcs(ctx context.Context, input *ec2.DescribeVpcsInput) (
 	return opt, nil
 }
 
-func (c *connector) GetDhcpOptions(ctx context.Context, input *ec2.DescribeDhcpOptionsInput) ([]*ec2.DhcpOptions, error) {
+func (c *connector) GetVpcDhcpOptions(ctx context.Context, input *ec2.DescribeDhcpOptionsInput) ([]*ec2.DhcpOptions, error) {
 	if c.svc.ec2 == nil {
 		c.svc.ec2 = ec2.New(c.svc.session)
 	}

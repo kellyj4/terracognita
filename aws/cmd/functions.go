@@ -492,6 +492,7 @@ var (
 			`,
 		},
 		Function{
+			FnName:          "GetVpcDhcpOptions",
 			Entity:          "DhcpOptions",
 			Service:         "ec2",
 			FnOutput:        "ec2.DhcpOptions",

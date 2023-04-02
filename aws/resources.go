@@ -153,6 +153,7 @@ const (
 	NetworkAcl
 	NetworkfirewallFirewall
 	NetworkfirewallFirewallPolices
+	NetworkfirewallRuleGroup
 	NeptuneCluster
 	RDSCluster
 	RDSGlobalCluster
@@ -295,6 +296,7 @@ var (
 		NetworkAcl:                                 networkAcl,
 		NetworkfirewallFirewall:                    networkfirewallFirewalls,
 		NetworkfirewallFirewallPolices:             networkfirewallFirewallPolices,
+	    NetworkfirewallRuleGroup:                   networkfirewallRuleGroup,
 		NeptuneCluster:                             neptuneClusters,
 		RDSCluster:                                 rdsClusters,
 		RDSGlobalCluster:                           rdsGlobalClusters,
@@ -3363,7 +3365,7 @@ func vpcEndpoints(ctx context.Context, a *aws, resourceType string, filters *fil
 
 func dhcpOptions(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
 
-	dhcpOption, err := a.awsr.GetDhcpOptions(ctx, nil)
+	dhcpOption, err := a.awsr.GetVpcDhcpOptions(ctx, nil)
 	if err != nil {
 		return nil, err
 	}

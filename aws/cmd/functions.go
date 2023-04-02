@@ -305,7 +305,7 @@ var (
 			`,
 		},
 		Function{
-			FnName:          "GetNetworkfirewallFirewallPolicies",
+			FnName:          "GetNetworkfirewallFirewallPolicy",
 			Entity:          "FirewallPolicies",
 			FnAttributeList: "FirewallPolicies",
 			FnOutput:        "networkfirewall.FirewallPolicyMetadata",

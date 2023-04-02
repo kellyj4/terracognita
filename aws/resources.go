@@ -152,7 +152,7 @@ const (
 	NatGateway
 	NetworkAcl
 	NetworkfirewallFirewall
-	NetworkfirewallFirewallPolicies
+	NetworkfirewallFirewallPolicy
 	NetworkfirewallRuleGroup
 	NeptuneCluster
 	RDSCluster
@@ -296,7 +296,7 @@ var (
 		NatGateway:                                 natGateways,
 		NetworkAcl:                                 networkAcl,
 		NetworkfirewallFirewall:                    networkfirewallFirewalls,
-		NetworkfirewallFirewallPolicies:            networkfirewallFirewallPolicies,
+		NetworkfirewallFirewallPolicy:              networkfirewallFirewallPolicy,
 	    NetworkfirewallRuleGroup:                   networkfirewallRuleGroup,
 		NeptuneCluster:                             neptuneClusters,
 		RDSCluster:                                 rdsClusters,
@@ -2681,8 +2681,8 @@ func networkfirewallFirewalls(ctx context.Context, a *aws, resourceType string, 
 	return resources, nil
 }
 
-func networkfirewallFirewallPolicies(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
-	networkfirewallsFirewall, err := a.awsr.GetNetworkfirewallFirewallPolicies(ctx, nil)
+func networkfirewallFirewallPolicy(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+	networkfirewallsFirewall, err := a.awsr.GetNetworkfirewallFirewallPolicy(ctx, nil)
 	if err != nil {
 		return nil, err
 	}

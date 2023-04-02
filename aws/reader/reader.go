@@ -164,7 +164,7 @@ type Reader interface {
 
 	// GetFirewallPolicies returns the firewall policies on the given input
 	// Returned values are commented in the interface doc comment block.
-	GetNetworkfirewallFirewallPolicies(ctx context.Context, input *networkfirewall.ListFirewallPoliciesInput) ([]*networkfirewall.FirewallPolicyMetadata, error)
+	GetNetworkfirewallFirewallPolicy(ctx context.Context, input *networkfirewall.ListFirewallPoliciesInput) ([]*networkfirewall.FirewallPolicyMetadata, error)
 
 	// GetFirewallPolicies returns the firewall policies on the given input
 	// Returned values are commented in the interface doc comment block.
@@ -1310,7 +1310,7 @@ func (c *connector) GetNetworkfirewallFirewall(ctx context.Context, input *netwo
 	return opt, nil
 }
 
-func (c *connector) GetNetworkfirewallFirewallPolicies(ctx context.Context, input *networkfirewall.ListFirewallPoliciesInput) ([]*networkfirewall.FirewallPolicyMetadata, error) {
+func (c *connector) GetNetworkfirewallFirewallPolicy(ctx context.Context, input *networkfirewall.ListFirewallPoliciesInput) ([]*networkfirewall.FirewallPolicyMetadata, error) {
 	if c.svc.networkfirewall == nil {
 		c.svc.networkfirewall = networkfirewall.New(c.svc.session)
 	}

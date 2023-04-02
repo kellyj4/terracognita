@@ -162,6 +162,14 @@ type Reader interface {
 	// Returned values are commented in the interface doc comment block.
 	GetNetworkfirewallFirewall(ctx context.Context, input *networkfirewall.ListFirewallsInput) ([]*networkfirewall.FirewallMetadata, error)
 
+	// GetFirewallPolicies returns the firewall policies on the given input
+	// Returned values are commented in the interface doc comment block.
+	GetNetworkfirewallFirewallPolicies(ctx context.Context, input *networkfirewall.ListFirewallPoliciesInput) ([]*networkfirewall.FirewallPolicyMetadata, error)
+
+	// GetFirewallPolicies returns the firewall policies on the given input
+	// Returned values are commented in the interface doc comment block.
+	GetNetworkfirewallRuleGroup(ctx context.Context, input *networkfirewall.ListRuleGroupsInput) ([]*networkfirewall.RuleGroupMetadata, error)
+
 	// GetAddresses returns all EC2 Addresses based on the input given.
 	// Returned values are commented in the interface doc comment block.
 	GetAddresses(ctx context.Context, input *ec2.DescribeAddressesInput) ([]*ec2.Address, error)
@@ -1288,6 +1296,68 @@ func (c *connector) GetNetworkfirewallFirewall(ctx context.Context, input *netwo
 		hasNextToken = o.NextToken != nil
 
 		opt = append(opt, o.Firewalls...)
+
+	}
+
+	return opt, nil
+}
+
+func (c *connector) GetNetworkfirewallFirewallPolicies(ctx context.Context, input *networkfirewall.ListFirewallPoliciesInput) ([]*networkfirewall.FirewallPolicyMetadata, error) {
+	if c.svc.networkfirewall == nil {
+		c.svc.networkfirewall = networkfirewall.New(c.svc.session)
+	}
+
+	opt := make([]*networkfirewall.FirewallPolicyMetadata, 0)
+
+	hasNextToken := true
+	for hasNextToken {
+		o, err := c.svc.networkfirewall.ListFirewallPoliciesWithContext(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+		if o.FirewallPolicies == nil {
+			hasNextToken = false
+			continue
+		}
+
+		if input == nil {
+			input = &networkfirewall.ListFirewallPoliciesInput{}
+		}
+		input.NextToken = o.NextToken
+		hasNextToken = o.NextToken != nil
+
+		opt = append(opt, o.FirewallPolicies...)
+
+	}
+
+	return opt, nil
+}
+
+func (c *connector) GetNetworkfirewallRuleGroup(ctx context.Context, input *networkfirewall.ListRuleGroupsInput) ([]*networkfirewall.RuleGroupMetadata, error) {
+	if c.svc.networkfirewall == nil {
+		c.svc.networkfirewall = networkfirewall.New(c.svc.session)
+	}
+
+	opt := make([]*networkfirewall.RuleGroupMetadata, 0)
+
+	hasNextToken := true
+	for hasNextToken {
+		o, err := c.svc.networkfirewall.ListRuleGroupsWithContext(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+		if o.RuleGroups == nil {
+			hasNextToken = false
+			continue
+		}
+
+		if input == nil {
+			input = &networkfirewall.ListRuleGroupsInput{}
+		}
+		input.NextToken = o.NextToken
+		hasNextToken = o.NextToken != nil
+
+		opt = append(opt, o.RuleGroups...)
 
 	}
 

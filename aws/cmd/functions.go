@@ -304,6 +304,30 @@ var (
 			// Returned values are commented in the interface doc comment block.
 			`,
 		},
+		Function{
+			FnName:						"GetNetworkfirewallFirewallPolicies",
+			Entity:                     "FirewallPolicies",
+			FnAttributeList:            "FirewallPolicies",
+			FnOutput:                   "networkfirewall.FirewallPolicyMetadata",
+			Prefix:                     "List",
+			Service:                    "networkfirewall",
+			Documentation: `
+			// GetFirewallPolicies returns the firewall policies on the given input
+			// Returned values are commented in the interface doc comment block.
+			`,
+		},
+		Function{
+			FnName:						"GetNetworkfirewallRuleGroup",
+			Entity:                     "RuleGroups",
+			FnAttributeList:            "RuleGroups",
+			FnOutput:                   "networkfirewall.RuleGroupMetadata",
+			Prefix:                     "List",
+			Service:                    "networkfirewall",
+			Documentation: `
+			// GetFirewallPolicies returns the firewall policies on the given input
+			// Returned values are commented in the interface doc comment block.
+			`,
+		},
 		// ec2
 		Function{
 			HasNotPagination: true,

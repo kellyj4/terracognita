@@ -151,6 +151,7 @@ const (
 	NatGateway
 	NetworkAcl
 	NetworkfirewallFirewall
+	NetworkfirewallFirewallPolices
 	NeptuneCluster
 	RDSCluster
 	RDSGlobalCluster
@@ -291,6 +292,7 @@ var (
 		NatGateway:                                 natGateways,
 		NetworkAcl:                                 networkAcl,
 		NetworkfirewallFirewall:                    networkfirewallFirewalls,
+		NetworkfirewallFirewallPolices:             networkfirewallFirewallPolices,
 		NeptuneCluster:                             neptuneClusters,
 		RDSCluster:                                 rdsClusters,
 		RDSGlobalCluster:                           rdsGlobalClusters,
@@ -2644,6 +2646,42 @@ func networkfirewallFirewalls(ctx context.Context, a *aws, resourceType string, 
 	resources := make([]provider.Resource, 0)
 	for _, i := range networkfirewallsFirewall {
 		r, err := initializeResource(a, *i.FirewallArn, resourceType)
+		if err != nil {
+			return nil, err
+		}
+		resources = append(resources, r)
+	}
+
+	return resources, nil
+}
+
+func networkfirewallFirewallPolices(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+	networkfirewallsFirewall, err := a.awsr.GetNetworkfirewallFirewallPolicies(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resources := make([]provider.Resource, 0)
+	for _, i := range networkfirewallsFirewall {
+		r, err := initializeResource(a, *i.Arn, resourceType)
+		if err != nil {
+			return nil, err
+		}
+		resources = append(resources, r)
+	}
+
+	return resources, nil
+}
+
+func networkfirewallRuleGroup(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+	networkfirewallsFirewall, err := a.awsr.GetNetworkfirewallRuleGroup(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resources := make([]provider.Resource, 0)
+	for _, i := range networkfirewallsFirewall {
+		r, err := initializeResource(a, *i.Arn, resourceType)
 		if err != nil {
 			return nil, err
 		}

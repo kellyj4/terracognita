@@ -292,7 +292,18 @@ var (
 			// Returned values are commented in the interface doc comment block.
 			`,
 		},
-
+		Function{
+			FnName:						"GetFirewalls",
+			Entity:                     "Firewalls",
+			FnAttributeList:            "Firewalls",
+			FnOutput:                   "networkfirewall.FirewallMetadata",
+			Prefix:                     "List",
+			Service:                    "networkfirewall",
+			Documentation: `
+			// GetFirewalls returns the firewall on the given input
+			// Returned values are commented in the interface doc comment block.
+			`,
+		},
 		// ec2
 		Function{
 			HasNotPagination: true,

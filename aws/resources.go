@@ -106,6 +106,7 @@ const (
 	ELB
 	EMRCluster
 	FsxLustreFileSystem
+	Firewalls
 	GlueCatalogDatabase
 	GlueCatalogTable
 	IAMAccessKey
@@ -248,6 +249,7 @@ var (
 		ELB:                                        elbs,
 		EMRCluster:                                 emrClusters,
 		FsxLustreFileSystem:                        fsxLustreFileSystems,
+		Firewalls:                        			networkfirewallFirewalls,
 		GlueCatalogDatabase:                        cacheGlueDatabases,
 		GlueCatalogTable:                           glueCatalogTables,
 		IAMAccessKey:                               iamAccessKeys,
@@ -1781,6 +1783,7 @@ func fsxLustreFileSystems(ctx context.Context, a *aws, resourceType string, filt
 	return resources, nil
 }
 
+
 func glueCatalogDatabases(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
 	glueCatalogDatabases, err := a.awsr.GetGlueDatabases(ctx, nil)
 	if err != nil {
@@ -2626,6 +2629,24 @@ func natGateways(ctx context.Context, a *aws, resourceType string, filters *filt
 			return nil, err
 		}
 
+		resources = append(resources, r)
+	}
+
+	return resources, nil
+}
+
+func networkfirewallFirewalls(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+	networkfirewallsFirewall, err := a.awsr.GetFirewalls(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resources := make([]provider.Resource, 0)
+	for _, i := range networkfirewallsFirewall {
+		r, err := initializeResource(a, *i.FirewallArn, resourceType)
+		if err != nil {
+			return nil, err
+		}
 		resources = append(resources, r)
 	}
 

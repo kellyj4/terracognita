@@ -34,6 +34,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/mediastore"
 	"github.com/aws/aws-sdk-go/service/mq"
 	"github.com/aws/aws-sdk-go/service/neptune"
+	"github.com/aws/aws-sdk-go/service/networkfirewall"
 	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/aws/aws-sdk-go/service/redshift"
 	"github.com/aws/aws-sdk-go/service/route53"
@@ -156,6 +157,10 @@ type Reader interface {
 	// GetDynamodbTables returns the dynamodb talbles on the given input
 	// Returned values are commented in the interface doc comment block.
 	GetDynamodbTables(ctx context.Context, input *dynamodb.ListTablesInput) ([]*string, error)
+
+	// GetFirewalls returns the firewall on the given input
+	// Returned values are commented in the interface doc comment block.
+	GetFirewalls(ctx context.Context, input *networkfirewall.ListFirewallsInput) ([]*networkfirewall.FirewallMetadata, error)
 
 	// GetAddresses returns all EC2 Addresses based on the input given.
 	// Returned values are commented in the interface doc comment block.
@@ -1252,6 +1257,37 @@ func (c *connector) GetDynamodbTables(ctx context.Context, input *dynamodb.ListT
 		hasNextToken = o.LastEvaluatedTableName != nil
 
 		opt = append(opt, o.TableNames...)
+
+	}
+
+	return opt, nil
+}
+
+func (c *connector) GetFirewalls(ctx context.Context, input *networkfirewall.ListFirewallsInput) ([]*networkfirewall.FirewallMetadata, error) {
+	if c.svc.networkfirewall == nil {
+		c.svc.networkfirewall = networkfirewall.New(c.svc.session)
+	}
+
+	opt := make([]*networkfirewall.FirewallMetadata, 0)
+
+	hasNextToken := true
+	for hasNextToken {
+		o, err := c.svc.networkfirewall.ListFirewallsWithContext(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+		if o.Firewalls == nil {
+			hasNextToken = false
+			continue
+		}
+
+		if input == nil {
+			input = &networkfirewall.ListFirewallsInput{}
+		}
+		input.NextToken = o.NextToken
+		hasNextToken = o.NextToken != nil
+
+		opt = append(opt, o.Firewalls...)
 
 	}
 

@@ -39,6 +39,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/lightsail/lightsailiface"
 	"github.com/aws/aws-sdk-go/service/mediastore/mediastoreiface"
 	"github.com/aws/aws-sdk-go/service/mq/mqiface"
+	"github.com/aws/aws-sdk-go/service/networkfirewall/networkfirewalliface"
 	"github.com/aws/aws-sdk-go/service/neptune/neptuneiface"
 	"github.com/aws/aws-sdk-go/service/rds/rdsiface"
 	"github.com/aws/aws-sdk-go/service/redshift/redshiftiface"
@@ -140,6 +141,7 @@ type serviceConnector struct {
 	lightsail                lightsailiface.LightsailAPI
 	mediastore               mediastoreiface.MediaStoreAPI
 	mq                       mqiface.MQAPI
+	networkfirewall          networkfirewalliface.NetworkFirewallAPI
 	neptune                  neptuneiface.NeptuneAPI
 	rds                      rdsiface.RDSAPI
 	redshift                 redshiftiface.RedshiftAPI

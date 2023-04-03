@@ -142,10 +142,6 @@ type Reader interface {
 	// Returned values are commented in the interface doc comment block.
 	GetDirectConnectGateways(ctx context.Context, input *directconnect.DescribeDirectConnectGatewaysInput) ([]*directconnect.Gateway, error)
 
-	// GetDirectConnectGatewayAssociations returns the Direct Connect Gateway Association on the given input
-	// Returned values are commented in the interface doc comment block.
-	GetDirectConnectGatewayAssociations(ctx context.Context, input *directconnect.DescribeDirectConnectGatewayAssociationsInput) ([]*directconnect.GatewayAssociation, error)
-
 	// GetConnectins returns the Direct Connect connections on the given input
 	// Returned values are commented in the interface doc comment block.
 	GetDirectConnections(ctx context.Context, input *directconnect.DescribeConnectionsInput) ([]*directconnect.Connection, error)
@@ -1165,37 +1161,6 @@ func (c *connector) GetDirectConnectGateways(ctx context.Context, input *directc
 		hasNextToken = o.NextToken != nil
 
 		opt = append(opt, o.DirectConnectGateways...)
-
-	}
-
-	return opt, nil
-}
-
-func (c *connector) GetDirectConnectGatewayAssociations(ctx context.Context, input *directconnect.DescribeDirectConnectGatewayAssociationsInput) ([]*directconnect.GatewayAssociation, error) {
-	if c.svc.directconnect == nil {
-		c.svc.directconnect = directconnect.New(c.svc.session)
-	}
-
-	opt := make([]*directconnect.GatewayAssociation, 0)
-
-	hasNextToken := true
-	for hasNextToken {
-		o, err := c.svc.directconnect.DescribeDirectConnectGatewayAssociationsWithContext(ctx, input)
-		if err != nil {
-			return nil, err
-		}
-		if o.DirectConnectGatewayAssociations == nil {
-			hasNextToken = false
-			continue
-		}
-
-		if input == nil {
-			input = &directconnect.DescribeDirectConnectGatewayAssociationsInput{}
-		}
-		input.NextToken = o.NextToken
-		hasNextToken = o.NextToken != nil
-
-		opt = append(opt, o.DirectConnectGatewayAssociations...)
 
 	}
 

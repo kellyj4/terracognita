@@ -78,7 +78,6 @@ const (
 	DmsReplicationInstance
 	DXConnection
 	DXGateway
-	DXGatewayAssociation
 	DynamodbGlobalTable
 	DynamodbTable
 	EBSSnapshot
@@ -229,7 +228,6 @@ var (
 		DmsReplicationInstance:         dmsReplicationInstances,
 		DXConnection:                   dxConnection,
 		DXGateway:                      dxGateways,
-		DXGatewayAssociation:           dxGatewayAssociations,
 		DynamodbGlobalTable:            dynamodbGlobalTables,
 		DynamodbTable:                  dynamodbTables,
 		EBSSnapshot:                                ebsSnapshots,
@@ -1091,25 +1089,6 @@ func dxGateways(ctx context.Context, a *aws, resourceType string, filters *filte
 
 	resources := make([]provider.Resource, 0)
 	for _, i := range dxGateways {
-		r, err := initializeResource(a, *i.DirectConnectGatewayId, resourceType)
-		if err != nil {
-			return nil, err
-		}
-
-		resources = append(resources, r)
-	}
-
-	return resources, nil
-}
-
-func dxGatewayAssociations(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
-	dxGatewayAssociation, err := a.awsr.GetDirectConnectGatewayAssociations(ctx, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	resources := make([]provider.Resource, 0)
-	for _, i := range dxGatewayAssociation {
 		r, err := initializeResource(a, *i.DirectConnectGatewayId, resourceType)
 		if err != nil {
 			return nil, err

@@ -3415,7 +3415,7 @@ func vpcIpam(ctx context.Context, a *aws, resourceType string, filters *filter.F
 
 	resources := make([]provider.Resource, 0)
 	for _, v := range dhcpOption {
-		r, err := initializeResource(a, *v.IpamArn, resourceType)
+		r, err := initializeResource(a, *v.IpamId, resourceType)
 		if err != nil {
 			return nil, err
 		}

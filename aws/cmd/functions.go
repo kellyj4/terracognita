@@ -232,28 +232,24 @@ var (
 			`,
 		},
 		Function{
-			HasNotPagination: true,
-			FnName:          "GetVirtualInterfaces",
-			Entity:          "VirtualInterfaces",
-			FnAttributeList: "VirtualInterfaces",
-			SingularEntity:  "VirtualInterface",
+			FnName:          "GetDirectConnectGatewayAssociations",
+			Entity:          "DirectConnectGatewayAssociations",
+			FnOutput:        "directconnect.GatewayAssociation",
 			Prefix:          "Describe",
 			Service:         "directconnect",
 			Documentation: `
-			// GetVirtualInterfaces returns the Direct Connect virtual interfaces on the given input
+			// GetDirectConnectGatewayAssociations returns the Direct Connect Gateway Association on the given input
 			// Returned values are commented in the interface doc comment block.
 			`,
 		},
 		Function{
 			HasNotPagination: true,
-			FnName:          "GetVirtualGateways",
-			Entity:          "VirtualGateways",
-			FnAttributeList: "VirtualGateways",
-			SingularEntity:  "VirtualGateway",
+			FnName:          "GetDirectConnections",
+			Entity:          "Connections",
 			Prefix:          "Describe",
 			Service:         "directconnect",
 			Documentation: `
-			// GetVirtualGateways returns the Direct Connect virtual interfaces on the given input
+			// GetConnectins returns the Direct Connect connections on the given input
 			// Returned values are commented in the interface doc comment block.
 			`,
 		},
@@ -669,6 +665,16 @@ var (
 			Service: "ec2",
 			Documentation: `
 			// GetIpams returns the ec2 Ipam names on the given input
+			// Returned values are commented in the interface doc comment block.
+			`,
+		},
+		Function{
+			FnName:  "GetIpamPools",
+			Entity:  "IpamPools",
+			Prefix:  "Describe",
+			Service: "ec2",
+			Documentation: `
+			// GetIpamPools returns the ec2 Ipam Pool names on the given input
 			// Returned values are commented in the interface doc comment block.
 			`,
 		},

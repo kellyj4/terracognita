@@ -44,12 +44,11 @@ const (
 
 	// Do not have them for now as it's not needed
 	// but works
-	//AMI
 
 	// Do not have them for now as it's not needed
 	// but works
-	//EBSSnapshot
 
+	AMI
 	ALB
 	ALBListener
 	ALBListenerCertificate
@@ -77,9 +76,12 @@ const (
 	DBSubnetGroup
 	DirectoryServiceDirectory
 	DmsReplicationInstance
+	DXConnection
 	DXGateway
+	DXGatewayAssociation
 	DynamodbGlobalTable
 	DynamodbTable
+	EBSSnapshot
 	EBSVolume
 	ECSCluster
 	ECSService
@@ -190,6 +192,7 @@ const (
 	VPCDhcpOptions
 	VPCEndpoint
 	VPCIpam
+	VPCIpamPools
 	VPCPeeringConnection
 	VPNGateway
 )
@@ -204,7 +207,7 @@ var (
 		ALBListenerRule:          albListenerRules,
 		ALBTargetGroup:           albTargetGroups,
 		ALBTargetGroupAttachment: albTargetGroupAttachments,
-		//AMI:      ami,
+		AMI:      amis,
 		APIGatewayDeployment:           apiGatewayDeployments,
 		APIGatewayResource:             apiGatewayResources,
 		APIGatewayRestAPI:              apiGatewayRestApis,
@@ -224,10 +227,12 @@ var (
 		DBSubnetGroup:                  dbSubnetGroups,
 		DirectoryServiceDirectory:      directoryServiceDirectories,
 		DmsReplicationInstance:         dmsReplicationInstances,
+		DXConnection:                   dxConnection,
 		DXGateway:                      dxGateways,
+		DXGatewayAssociation:           dxGatewayAssociations,
 		DynamodbGlobalTable:            dynamodbGlobalTables,
 		DynamodbTable:                  dynamodbTables,
-		//EBSSnapshot:         ebsSnapshots,
+		EBSSnapshot:                                ebsSnapshots,
 		EBSVolume:                                  ebsVolumes,
 		ECSCluster:                                 cacheECSClusters,
 		ECSService:                                 ecsServices,
@@ -334,6 +339,7 @@ var (
 		VPCDhcpOptions:               vpcdhcpOptions,
 		VPCEndpoint:                  vpcEndpoints,
 	    VPCIpam:                      vpcIpam,
+	    VPCIpamPools:                 vpcIpamPools,
 		VPNGateway:                   vpnGateways,
 	}
 )
@@ -590,7 +596,6 @@ func albTargetGroups(ctx context.Context, a *aws, resourceType string, filters *
 	return resources, nil
 }
 
-/*
 func amis(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
 	var input = &ec2.DescribeImagesInput{
 	Filters: toEC2Filters(filters),
@@ -602,7 +607,7 @@ func amis(ctx context.Context, a *aws, resourceType string, filters *filter.Filt
 	}
 
 	resources := make([]provider.Resource, 0)
-	for _, v := range images.Images {
+	for _, v := range images {
 	r, err := initializeResource(a, *v.ImageId, resourceType)
 	if err != nil {
 	return nil, err
@@ -612,7 +617,6 @@ func amis(ctx context.Context, a *aws, resourceType string, filters *filter.Filt
 
 	return resources, nil
 }
-*/
 
 func apiGatewayDeployments(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
 	apiGatewayRestApis, err := getAPIGatewayRestApis(ctx, a, APIGatewayRestAPI.String(), filters)
@@ -1060,6 +1064,25 @@ func dmsReplicationInstances(ctx context.Context, a *aws, resourceType string, f
 	return resources, nil
 }
 
+func dxConnection(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+	dxConnections, err := a.awsr.GetDirectConnections(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resources := make([]provider.Resource, 0)
+	for _, i := range dxConnections {
+		r, err := initializeResource(a, *i.ConnectionId, resourceType)
+		if err != nil {
+			return nil, err
+		}
+
+		resources = append(resources, r)
+	}
+
+	return resources, nil
+}
+
 func dxGateways(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
 	dxGateways, err := a.awsr.GetDirectConnectGateways(ctx, nil)
 	if err != nil {
@@ -1068,6 +1091,25 @@ func dxGateways(ctx context.Context, a *aws, resourceType string, filters *filte
 
 	resources := make([]provider.Resource, 0)
 	for _, i := range dxGateways {
+		r, err := initializeResource(a, *i.DirectConnectGatewayId, resourceType)
+		if err != nil {
+			return nil, err
+		}
+
+		resources = append(resources, r)
+	}
+
+	return resources, nil
+}
+
+func dxGatewayAssociations(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+	dxGatewayAssociation, err := a.awsr.GetDirectConnectGatewayAssociations(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resources := make([]provider.Resource, 0)
+	for _, i := range dxGatewayAssociation {
 		r, err := initializeResource(a, *i.DirectConnectGatewayId, resourceType)
 		if err != nil {
 			return nil, err
@@ -1122,7 +1164,7 @@ func dynamodbTables(ctx context.Context, a *aws, resourceType string, filters *f
 
 }
 
-/*
+
 func ebsSnapshots(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
 	var input = &ec2.DescribeSnapshotsInput{
 	Filters: toEC2Filters(filters),
@@ -1134,7 +1176,7 @@ func ebsSnapshots(ctx context.Context, a *aws, resourceType string, filters *fil
 	}
 
 	resources := make([]provider.Resource, 0)
-	for _, v := range snapshots.Snapshots {
+	for _, v := range snapshots {
 	r, err := initializeResource(a, *v.SnapshotId, resourceType)
 	if err != nil {
 	return nil, err
@@ -1144,7 +1186,6 @@ func ebsSnapshots(ctx context.Context, a *aws, resourceType string, filters *fil
 
 	return resources, nil
 }
-*/
 
 func ebsVolumes(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
 	var input = &ec2.DescribeVolumesInput{
@@ -3416,6 +3457,25 @@ func vpcIpam(ctx context.Context, a *aws, resourceType string, filters *filter.F
 	resources := make([]provider.Resource, 0)
 	for _, v := range dhcpOption {
 		r, err := initializeResource(a, *v.IpamId, resourceType)
+		if err != nil {
+			return nil, err
+		}
+		resources = append(resources, r)
+	}
+
+	return resources, nil
+}
+
+func vpcIpamPools(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+
+	dhcpOption, err := a.awsr.GetIpamPools(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resources := make([]provider.Resource, 0)
+	for _, v := range dhcpOption {
+		r, err := initializeResource(a, *v.IpamPoolId, resourceType)
 		if err != nil {
 			return nil, err
 		}

@@ -142,13 +142,13 @@ type Reader interface {
 	// Returned values are commented in the interface doc comment block.
 	GetDirectConnectGateways(ctx context.Context, input *directconnect.DescribeDirectConnectGatewaysInput) ([]*directconnect.Gateway, error)
 
-	// GetVirtualInterfaces returns the Direct Connect virtual interfaces on the given input
+	// GetDirectConnectGatewayAssociations returns the Direct Connect Gateway Association on the given input
 	// Returned values are commented in the interface doc comment block.
-	GetVirtualInterfaces(ctx context.Context, input *directconnect.DescribeVirtualInterfacesInput) ([]*directconnect.VirtualInterface, error)
+	GetDirectConnectGatewayAssociations(ctx context.Context, input *directconnect.DescribeDirectConnectGatewayAssociationsInput) ([]*directconnect.GatewayAssociation, error)
 
-	// GetVirtualGateways returns the Direct Connect virtual interfaces on the given input
+	// GetConnectins returns the Direct Connect connections on the given input
 	// Returned values are commented in the interface doc comment block.
-	GetVirtualGateways(ctx context.Context, input *directconnect.DescribeVirtualGatewaysInput) ([]*directconnect.VirtualGateway, error)
+	GetDirectConnections(ctx context.Context, input *directconnect.DescribeConnectionsInput) ([]*directconnect.Connection, error)
 
 	// GetDirectoryServiceDirectories returns the Directory Service directorie on the given input
 	// Returned values are commented in the interface doc comment block.
@@ -301,6 +301,10 @@ type Reader interface {
 	// GetIpams returns the ec2 Ipam names on the given input
 	// Returned values are commented in the interface doc comment block.
 	GetIpams(ctx context.Context, input *ec2.DescribeIpamsInput) ([]*ec2.Ipam, error)
+
+	// GetIpamPools returns the ec2 Ipam Pool names on the given input
+	// Returned values are commented in the interface doc comment block.
+	GetIpamPools(ctx context.Context, input *ec2.DescribeIpamPoolsInput) ([]*ec2.IpamPool, error)
 
 	// GetECSClustersArns returns the ecs clusters arns on the given input
 	// Returned values are commented in the interface doc comment block.
@@ -1167,54 +1171,58 @@ func (c *connector) GetDirectConnectGateways(ctx context.Context, input *directc
 	return opt, nil
 }
 
-func (c *connector) GetVirtualInterfaces(ctx context.Context, input *directconnect.DescribeVirtualInterfacesInput) ([]*directconnect.VirtualInterface, error) {
+func (c *connector) GetDirectConnectGatewayAssociations(ctx context.Context, input *directconnect.DescribeDirectConnectGatewayAssociationsInput) ([]*directconnect.GatewayAssociation, error) {
 	if c.svc.directconnect == nil {
 		c.svc.directconnect = directconnect.New(c.svc.session)
 	}
 
-	opt := make([]*directconnect.VirtualInterface, 0)
+	opt := make([]*directconnect.GatewayAssociation, 0)
 
 	hasNextToken := true
 	for hasNextToken {
-		o, err := c.svc.directconnect.DescribeVirtualInterfacesWithContext(ctx, input)
+		o, err := c.svc.directconnect.DescribeDirectConnectGatewayAssociationsWithContext(ctx, input)
 		if err != nil {
 			return nil, err
 		}
-		if o.VirtualInterfaces == nil {
+		if o.DirectConnectGatewayAssociations == nil {
 			hasNextToken = false
 			continue
 		}
 
-		hasNextToken = false
+		if input == nil {
+			input = &directconnect.DescribeDirectConnectGatewayAssociationsInput{}
+		}
+		input.NextToken = o.NextToken
+		hasNextToken = o.NextToken != nil
 
-		opt = append(opt, o.VirtualInterfaces...)
+		opt = append(opt, o.DirectConnectGatewayAssociations...)
 
 	}
 
 	return opt, nil
 }
 
-func (c *connector) GetVirtualGateways(ctx context.Context, input *directconnect.DescribeVirtualGatewaysInput) ([]*directconnect.VirtualGateway, error) {
+func (c *connector) GetDirectConnections(ctx context.Context, input *directconnect.DescribeConnectionsInput) ([]*directconnect.Connection, error) {
 	if c.svc.directconnect == nil {
 		c.svc.directconnect = directconnect.New(c.svc.session)
 	}
 
-	opt := make([]*directconnect.VirtualGateway, 0)
+	opt := make([]*directconnect.Connection, 0)
 
 	hasNextToken := true
 	for hasNextToken {
-		o, err := c.svc.directconnect.DescribeVirtualGatewaysWithContext(ctx, input)
+		o, err := c.svc.directconnect.DescribeConnectionsWithContext(ctx, input)
 		if err != nil {
 			return nil, err
 		}
-		if o.VirtualGateways == nil {
+		if o.Connections == nil {
 			hasNextToken = false
 			continue
 		}
 
 		hasNextToken = false
 
-		opt = append(opt, o.VirtualGateways...)
+		opt = append(opt, o.Connections...)
 
 	}
 
@@ -2377,6 +2385,37 @@ func (c *connector) GetIpams(ctx context.Context, input *ec2.DescribeIpamsInput)
 		hasNextToken = o.NextToken != nil
 
 		opt = append(opt, o.Ipams...)
+
+	}
+
+	return opt, nil
+}
+
+func (c *connector) GetIpamPools(ctx context.Context, input *ec2.DescribeIpamPoolsInput) ([]*ec2.IpamPool, error) {
+	if c.svc.ec2 == nil {
+		c.svc.ec2 = ec2.New(c.svc.session)
+	}
+
+	opt := make([]*ec2.IpamPool, 0)
+
+	hasNextToken := true
+	for hasNextToken {
+		o, err := c.svc.ec2.DescribeIpamPoolsWithContext(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+		if o.IpamPools == nil {
+			hasNextToken = false
+			continue
+		}
+
+		if input == nil {
+			input = &ec2.DescribeIpamPoolsInput{}
+		}
+		input.NextToken = o.NextToken
+		hasNextToken = o.NextToken != nil
+
+		opt = append(opt, o.IpamPools...)
 
 	}
 

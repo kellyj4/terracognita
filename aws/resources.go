@@ -191,7 +191,7 @@ const (
 	VPCDhcpOptions
 	VPCEndpoint
 	VPCIpam
-	VPCIpamPools
+	VPCIpamPool
 	VPCPeeringConnection
 	VPNGateway
 )
@@ -337,7 +337,7 @@ var (
 		VPCDhcpOptions:               vpcdhcpOptions,
 		VPCEndpoint:                  vpcEndpoints,
 	    VPCIpam:                      vpcIpam,
-	    VPCIpamPools:                 vpcIpamPools,
+	    VPCIpamPool:                  vpcIpamPool,
 		VPNGateway:                   vpnGateways,
 	}
 )
@@ -3445,7 +3445,7 @@ func vpcIpam(ctx context.Context, a *aws, resourceType string, filters *filter.F
 	return resources, nil
 }
 
-func vpcIpamPools(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+func vpcIpamPool(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
 
 	dhcpOption, err := a.awsr.GetIpamPools(ctx, nil)
 	if err != nil {

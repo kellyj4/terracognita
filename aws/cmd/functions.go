@@ -218,7 +218,6 @@ var (
 			// Returned values are commented in the interface doc comment block.
 			`,
 		},
-
 		// directconnect / dx
 		Function{
 			FnName:          "GetDirectConnectGateways",
@@ -232,7 +231,32 @@ var (
 			// Returned values are commented in the interface doc comment block.
 			`,
 		},
-
+		Function{
+			HasNotPagination: true,
+			FnName:          "GetVirtualInterfaces",
+			Entity:          "VirtualInterfaces",
+			FnAttributeList: "VirtualInterfaces",
+			SingularEntity:  "VirtualInterface",
+			Prefix:          "Describe",
+			Service:         "directconnect",
+			Documentation: `
+			// GetVirtualInterfaces returns the Direct Connect virtual interfaces on the given input
+			// Returned values are commented in the interface doc comment block.
+			`,
+		},
+		Function{
+			HasNotPagination: true,
+			FnName:          "GetVirtualGateways",
+			Entity:          "VirtualGateways",
+			FnAttributeList: "VirtualGateways",
+			SingularEntity:  "VirtualGateway",
+			Prefix:          "Describe",
+			Service:         "directconnect",
+			Documentation: `
+			// GetVirtualGateways returns the Direct Connect virtual interfaces on the given input
+			// Returned values are commented in the interface doc comment block.
+			`,
+		},
 		// directoryservice
 		Function{
 			FnName:          "GetDirectoryServiceDirectories",
@@ -632,6 +656,16 @@ var (
 			FnName:  "GetTransitGatewayRouteTablePropagations",
 			Entity:  "TransitGatewayRouteTablePropagations",
 			Prefix:  "Get",
+			Service: "ec2",
+			Documentation: `
+			// GetTransitGatewayRouteTablePropagations returns the ec2 Transit Gateway Route Table Propagations on the given input
+			// Returned values are commented in the interface doc comment block.
+			`,
+		},
+		Function{
+			FnName:  "GetIpams",
+			Entity:  "Ipams",
+			Prefix:  "Describe",
 			Service: "ec2",
 			Documentation: `
 			// GetTransitGatewayRouteTablePropagations returns the ec2 Transit Gateway Route Table Propagations on the given input

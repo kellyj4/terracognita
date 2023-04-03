@@ -142,6 +142,14 @@ type Reader interface {
 	// Returned values are commented in the interface doc comment block.
 	GetDirectConnectGateways(ctx context.Context, input *directconnect.DescribeDirectConnectGatewaysInput) ([]*directconnect.Gateway, error)
 
+	// GetVirtualInterfaces returns the Direct Connect virtual interfaces on the given input
+	// Returned values are commented in the interface doc comment block.
+	GetVirtualInterfaces(ctx context.Context, input *directconnect.DescribeVirtualInterfacesInput) ([]*directconnect.VirtualInterface, error)
+
+	// GetVirtualGateways returns the Direct Connect virtual interfaces on the given input
+	// Returned values are commented in the interface doc comment block.
+	GetVirtualGateways(ctx context.Context, input *directconnect.DescribeVirtualGatewaysInput) ([]*directconnect.VirtualGateway, error)
+
 	// GetDirectoryServiceDirectories returns the Directory Service directorie on the given input
 	// Returned values are commented in the interface doc comment block.
 	GetDirectoryServiceDirectories(ctx context.Context, input *directoryservice.DescribeDirectoriesInput) ([]*directoryservice.DirectoryDescription, error)
@@ -289,6 +297,10 @@ type Reader interface {
 	// GetTransitGatewayRouteTablePropagations returns the ec2 Transit Gateway Route Table Propagations on the given input
 	// Returned values are commented in the interface doc comment block.
 	GetTransitGatewayRouteTablePropagations(ctx context.Context, input *ec2.GetTransitGatewayRouteTablePropagationsInput) ([]*ec2.TransitGatewayRouteTablePropagation, error)
+
+	// GetTransitGatewayRouteTablePropagations returns the ec2 Transit Gateway Route Table Propagations on the given input
+	// Returned values are commented in the interface doc comment block.
+	GetIpams(ctx context.Context, input *ec2.DescribeIpamsInput) ([]*ec2.Ipam, error)
 
 	// GetECSClustersArns returns the ecs clusters arns on the given input
 	// Returned values are commented in the interface doc comment block.
@@ -1149,6 +1161,60 @@ func (c *connector) GetDirectConnectGateways(ctx context.Context, input *directc
 		hasNextToken = o.NextToken != nil
 
 		opt = append(opt, o.DirectConnectGateways...)
+
+	}
+
+	return opt, nil
+}
+
+func (c *connector) GetVirtualInterfaces(ctx context.Context, input *directconnect.DescribeVirtualInterfacesInput) ([]*directconnect.VirtualInterface, error) {
+	if c.svc.directconnect == nil {
+		c.svc.directconnect = directconnect.New(c.svc.session)
+	}
+
+	opt := make([]*directconnect.VirtualInterface, 0)
+
+	hasNextToken := true
+	for hasNextToken {
+		o, err := c.svc.directconnect.DescribeVirtualInterfacesWithContext(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+		if o.VirtualInterfaces == nil {
+			hasNextToken = false
+			continue
+		}
+
+		hasNextToken = false
+
+		opt = append(opt, o.VirtualInterfaces...)
+
+	}
+
+	return opt, nil
+}
+
+func (c *connector) GetVirtualGateways(ctx context.Context, input *directconnect.DescribeVirtualGatewaysInput) ([]*directconnect.VirtualGateway, error) {
+	if c.svc.directconnect == nil {
+		c.svc.directconnect = directconnect.New(c.svc.session)
+	}
+
+	opt := make([]*directconnect.VirtualGateway, 0)
+
+	hasNextToken := true
+	for hasNextToken {
+		o, err := c.svc.directconnect.DescribeVirtualGatewaysWithContext(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+		if o.VirtualGateways == nil {
+			hasNextToken = false
+			continue
+		}
+
+		hasNextToken = false
+
+		opt = append(opt, o.VirtualGateways...)
 
 	}
 
@@ -2280,6 +2346,37 @@ func (c *connector) GetTransitGatewayRouteTablePropagations(ctx context.Context,
 		hasNextToken = o.NextToken != nil
 
 		opt = append(opt, o.TransitGatewayRouteTablePropagations...)
+
+	}
+
+	return opt, nil
+}
+
+func (c *connector) GetIpams(ctx context.Context, input *ec2.DescribeIpamsInput) ([]*ec2.Ipam, error) {
+	if c.svc.ec2 == nil {
+		c.svc.ec2 = ec2.New(c.svc.session)
+	}
+
+	opt := make([]*ec2.Ipam, 0)
+
+	hasNextToken := true
+	for hasNextToken {
+		o, err := c.svc.ec2.DescribeIpamsWithContext(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+		if o.Ipams == nil {
+			hasNextToken = false
+			continue
+		}
+
+		if input == nil {
+			input = &ec2.DescribeIpamsInput{}
+		}
+		input.NextToken = o.NextToken
+		hasNextToken = o.NextToken != nil
+
+		opt = append(opt, o.Ipams...)
 
 	}
 

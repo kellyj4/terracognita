@@ -668,7 +668,7 @@ var (
 			Prefix:  "Describe",
 			Service: "ec2",
 			Documentation: `
-			// GetTransitGatewayRouteTablePropagations returns the ec2 Transit Gateway Route Table Propagations on the given input
+			// GetIpams returns the ec2 Ipam names on the given input
 			// Returned values are commented in the interface doc comment block.
 			`,
 		},

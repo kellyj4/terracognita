@@ -298,7 +298,7 @@ type Reader interface {
 	// Returned values are commented in the interface doc comment block.
 	GetTransitGatewayRouteTablePropagations(ctx context.Context, input *ec2.GetTransitGatewayRouteTablePropagationsInput) ([]*ec2.TransitGatewayRouteTablePropagation, error)
 
-	// GetTransitGatewayRouteTablePropagations returns the ec2 Transit Gateway Route Table Propagations on the given input
+	// GetIpams returns the ec2 Ipam names on the given input
 	// Returned values are commented in the interface doc comment block.
 	GetIpams(ctx context.Context, input *ec2.DescribeIpamsInput) ([]*ec2.Ipam, error)
 

@@ -242,6 +242,17 @@ var (
 			// Returned values are commented in the interface doc comment block.
 			`,
 		},
+		Function{
+			HasNotPagination: true,
+			FnName:          "GetVirtualInterfaces",
+			Entity:          "VirtualInterfaces",
+			Prefix:          "Describe",
+			Service:         "directconnect",
+			Documentation: `
+			// GetConnectins returns the Direct Connect connections on the given input
+			// Returned values are commented in the interface doc comment block.
+			`,
+		},
 		// directoryservice
 		Function{
 			FnName:          "GetDirectoryServiceDirectories",

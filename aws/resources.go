@@ -42,12 +42,6 @@ const (
 	// List of all the Resources
 	Instance ResourceType = iota
 
-	// Do not have them for now as it's not needed
-	// but works
-
-	// Do not have them for now as it's not needed
-	// but works
-
 	AMI
 	ALB
 	ALBListener
@@ -78,6 +72,7 @@ const (
 	DmsReplicationInstance
 	DXConnection
 	DXGateway
+	DXPrivateVirtualInterface
 	DynamodbGlobalTable
 	DynamodbTable
 	EBSSnapshot
@@ -228,6 +223,7 @@ var (
 		DmsReplicationInstance:         dmsReplicationInstances,
 		DXConnection:                   dxConnection,
 		DXGateway:                      dxGateways,
+		DXPrivateVirtualInterface:  dxPrivateVirtualInterface,
 		DynamodbGlobalTable:            dynamodbGlobalTables,
 		DynamodbTable:                  dynamodbTables,
 		EBSSnapshot:                                ebsSnapshots,
@@ -1090,6 +1086,25 @@ func dxGateways(ctx context.Context, a *aws, resourceType string, filters *filte
 	resources := make([]provider.Resource, 0)
 	for _, i := range dxGateways {
 		r, err := initializeResource(a, *i.DirectConnectGatewayId, resourceType)
+		if err != nil {
+			return nil, err
+		}
+
+		resources = append(resources, r)
+	}
+
+	return resources, nil
+}
+
+func dxPrivateVirtualInterface(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+	dxPrivateVirtualInterface, err := a.awsr.GetVirtualInterfaces(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resources := make([]provider.Resource, 0)
+	for _, i := range dxPrivateVirtualInterface {
+		r, err := initializeResource(a, *i.VirtualInterfaceId, resourceType)
 		if err != nil {
 			return nil, err
 		}

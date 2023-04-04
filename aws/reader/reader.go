@@ -146,6 +146,10 @@ type Reader interface {
 	// Returned values are commented in the interface doc comment block.
 	GetDirectConnections(ctx context.Context, input *directconnect.DescribeConnectionsInput) ([]*directconnect.Connection, error)
 
+	// GetConnectins returns the Direct Connect connections on the given input
+	// Returned values are commented in the interface doc comment block.
+	GetVirtualInterfaces(ctx context.Context, input *directconnect.DescribeVirtualInterfacesInput) ([]*directconnect.VirtualInterface, error)
+
 	// GetDirectoryServiceDirectories returns the Directory Service directorie on the given input
 	// Returned values are commented in the interface doc comment block.
 	GetDirectoryServiceDirectories(ctx context.Context, input *directoryservice.DescribeDirectoriesInput) ([]*directoryservice.DirectoryDescription, error)
@@ -1188,6 +1192,33 @@ func (c *connector) GetDirectConnections(ctx context.Context, input *directconne
 		hasNextToken = false
 
 		opt = append(opt, o.Connections...)
+
+	}
+
+	return opt, nil
+}
+
+func (c *connector) GetVirtualInterfaces(ctx context.Context, input *directconnect.DescribeVirtualInterfacesInput) ([]*directconnect.VirtualInterface, error) {
+	if c.svc.directconnect == nil {
+		c.svc.directconnect = directconnect.New(c.svc.session)
+	}
+
+	opt := make([]*directconnect.VirtualInterface, 0)
+
+	hasNextToken := true
+	for hasNextToken {
+		o, err := c.svc.directconnect.DescribeVirtualInterfacesWithContext(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+		if o.VirtualInterfaces == nil {
+			hasNextToken = false
+			continue
+		}
+
+		hasNextToken = false
+
+		opt = append(opt, o.VirtualInterfaces...)
 
 	}
 

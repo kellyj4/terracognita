@@ -73,6 +73,7 @@ const (
 	DXConnection
 	DXGateway
 	DXPrivateVirtualInterface
+	DXPublicVirtualInterface
 	DynamodbGlobalTable
 	DynamodbTable
 	EBSSnapshot
@@ -224,6 +225,7 @@ var (
 		DXConnection:                   dxConnection,
 		DXGateway:                      dxGateways,
 		DXPrivateVirtualInterface:  dxPrivateVirtualInterface,
+		DXPublicVirtualInterface:  dxPublicVirtualInterface,
 		DynamodbGlobalTable:            dynamodbGlobalTables,
 		DynamodbTable:                  dynamodbTables,
 		EBSSnapshot:                                ebsSnapshots,
@@ -1110,6 +1112,27 @@ func dxPrivateVirtualInterface(ctx context.Context, a *aws, resourceType string,
 		}
 
 		if *i.VirtualInterfaceType == "private" {
+		   resources = append(resources, r)
+		}
+	}
+
+	return resources, nil
+}
+
+func dxPublicVirtualInterface(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+	dxPublicVirtualInterface, err := a.awsr.GetPublicVirtualInterfaces(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resources := make([]provider.Resource, 0)
+	for _, i := range dxPublicVirtualInterface {
+		r, err := initializeResource(a, *i.VirtualInterfaceId, resourceType)
+		if err != nil {
+			return nil, err
+		}
+
+		if *i.VirtualInterfaceType == "public" {
 		   resources = append(resources, r)
 		}
 	}

@@ -1109,7 +1109,9 @@ func dxPrivateVirtualInterface(ctx context.Context, a *aws, resourceType string,
 			return nil, err
 		}
 
-		resources = append(resources, r)
+		if *i.VirtualInterfaceType == "private" {
+		   resources = append(resources, r)
+		}
 	}
 
 	return resources, nil

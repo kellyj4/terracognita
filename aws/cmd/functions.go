@@ -187,6 +187,28 @@ var (
 			// Returned values are commented in the interface doc comment block.
 			`,
 		},
+		Function{
+			FnName:          "GetDashboards",
+			Entity:          "Dashboards",
+			FnAttributeList: "DashboardEntries",
+			FnOutput:        "cloudwatch.DashboardEntry",
+			Prefix:          "List",
+			Service:         "cloudwatch",
+			Documentation: `
+			// GetDashboards returns all cloudwatch dashboards based on the input given.
+			// Returned values are commented in the interface doc comment block.
+			`,
+		},
+		Function{
+			FnName:          "GetLogGroups",
+			Entity:          "LogGroups",
+			Prefix:          "Describe",
+			Service:         "cloudwatchlogs",
+			Documentation: `
+			// GetLogGroups returns all cloudwatchlog groups based on the input given.
+			// Returned values are commented in the interface doc comment block.
+			`,
+		},
 
 		// configservice
 		Function{

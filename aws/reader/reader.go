@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/batch"
 	"github.com/aws/aws-sdk-go/service/cloudfront"
 	"github.com/aws/aws-sdk-go/service/cloudwatch"
+	"github.com/aws/aws-sdk-go/service/cloudwatchlogs"
 	"github.com/aws/aws-sdk-go/service/configservice"
 	"github.com/aws/aws-sdk-go/service/databasemigrationservice"
 	"github.com/aws/aws-sdk-go/service/dax"
@@ -126,6 +127,14 @@ type Reader interface {
 	// GetMetricAlarms returns all cloudwatch alarms based on the input given.
 	// Returned values are commented in the interface doc comment block.
 	GetMetricAlarms(ctx context.Context, input *cloudwatch.DescribeAlarmsInput) ([]*cloudwatch.MetricAlarm, error)
+
+	// GetDashboards returns all cloudwatch dashboards based on the input given.
+	// Returned values are commented in the interface doc comment block.
+	GetDashboards(ctx context.Context, input *cloudwatch.ListDashboardsInput) ([]*cloudwatch.DashboardEntry, error)
+
+	// GetLogGroups returns all cloudwatchlog groups based on the input given.
+	// Returned values are commented in the interface doc comment block.
+	GetLogGroups(ctx context.Context, input *cloudwatchlogs.DescribeLogGroupsInput) ([]*cloudwatchlogs.LogGroup, error)
 
 	// GetRecordedResourceCounts returns counts of the AWS resources which have
 	// been recorded by AWS Config.
@@ -1080,6 +1089,68 @@ func (c *connector) GetMetricAlarms(ctx context.Context, input *cloudwatch.Descr
 		hasNextToken = o.NextToken != nil
 
 		opt = append(opt, o.MetricAlarms...)
+
+	}
+
+	return opt, nil
+}
+
+func (c *connector) GetDashboards(ctx context.Context, input *cloudwatch.ListDashboardsInput) ([]*cloudwatch.DashboardEntry, error) {
+	if c.svc.cloudwatch == nil {
+		c.svc.cloudwatch = cloudwatch.New(c.svc.session)
+	}
+
+	opt := make([]*cloudwatch.DashboardEntry, 0)
+
+	hasNextToken := true
+	for hasNextToken {
+		o, err := c.svc.cloudwatch.ListDashboardsWithContext(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+		if o.DashboardEntries == nil {
+			hasNextToken = false
+			continue
+		}
+
+		if input == nil {
+			input = &cloudwatch.ListDashboardsInput{}
+		}
+		input.NextToken = o.NextToken
+		hasNextToken = o.NextToken != nil
+
+		opt = append(opt, o.DashboardEntries...)
+
+	}
+
+	return opt, nil
+}
+
+func (c *connector) GetLogGroups(ctx context.Context, input *cloudwatchlogs.DescribeLogGroupsInput) ([]*cloudwatchlogs.LogGroup, error) {
+	if c.svc.cloudwatchlogs == nil {
+		c.svc.cloudwatchlogs = cloudwatchlogs.New(c.svc.session)
+	}
+
+	opt := make([]*cloudwatchlogs.LogGroup, 0)
+
+	hasNextToken := true
+	for hasNextToken {
+		o, err := c.svc.cloudwatchlogs.DescribeLogGroupsWithContext(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+		if o.LogGroups == nil {
+			hasNextToken = false
+			continue
+		}
+
+		if input == nil {
+			input = &cloudwatchlogs.DescribeLogGroupsInput{}
+		}
+		input.NextToken = o.NextToken
+		hasNextToken = o.NextToken != nil
+
+		opt = append(opt, o.LogGroups...)
 
 	}
 

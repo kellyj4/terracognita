@@ -64,6 +64,8 @@ const (
 	CloudfrontOriginAccessIdentity
 	CloudfrontPublicKey
 	CloudwatchMetricAlarm
+	CloudwatchDashboard
+	CloudwatchLogGroup
 	DaxCluster
 	DBInstance
 	DBParameterGroup
@@ -217,6 +219,8 @@ var (
 		CloudfrontOriginAccessIdentity: cloudfrontOriginAccessIdentities,
 		CloudfrontPublicKey:            cloudfrontPublicKeys,
 		CloudwatchMetricAlarm:          cloudwatchMetricAlarms,
+		CloudwatchDashboard:            cloudwatchDashboards,
+	    CloudwatchLogGroup:             cloudwatchLogGroup,
 		DaxCluster:                     daxClusters,
 		DBInstance:                     dbInstances,
 		DBParameterGroup:               dbParameterGroups,
@@ -934,6 +938,44 @@ func cloudwatchMetricAlarms(ctx context.Context, a *aws, resourceType string, fi
 	resources := make([]provider.Resource, 0)
 	for _, i := range alarms {
 		r, err := initializeResource(a, *i.AlarmName, resourceType)
+		if err != nil {
+			return nil, err
+		}
+
+		resources = append(resources, r)
+	}
+
+	return resources, nil
+}
+
+func cloudwatchDashboards(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+	dashboards, err := a.awsr.GetDashboards(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resources := make([]provider.Resource, 0)
+	for _, i := range dashboards {
+		r, err := initializeResource(a, *i.DashboardArn, resourceType)
+		if err != nil {
+			return nil, err
+		}
+
+		resources = append(resources, r)
+	}
+
+	return resources, nil
+}
+
+func cloudwatchLogGroup(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+	dashboards, err := a.awsr.GetDashboards(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resources := make([]provider.Resource, 0)
+	for _, i := range dashboards {
+		r, err := initializeResource(a, *i.DashboardArn, resourceType)
 		if err != nil {
 			return nil, err
 		}

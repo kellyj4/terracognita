@@ -14,6 +14,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/batch/batchiface"
 	"github.com/aws/aws-sdk-go/service/cloudfront/cloudfrontiface"
 	"github.com/aws/aws-sdk-go/service/cloudwatch/cloudwatchiface"
+	"github.com/aws/aws-sdk-go/service/cloudwatchlogs/cloudwatchlogsiface"
 	"github.com/aws/aws-sdk-go/service/configservice/configserviceiface"
 	"github.com/aws/aws-sdk-go/service/databasemigrationservice/databasemigrationserviceiface"
 	"github.com/aws/aws-sdk-go/service/dax/daxiface"
@@ -117,6 +118,7 @@ type serviceConnector struct {
 	batch                    batchiface.BatchAPI
 	cloudfront               cloudfrontiface.CloudFrontAPI
 	cloudwatch               cloudwatchiface.CloudWatchAPI
+	cloudwatchlogs           cloudwatchlogsiface.CloudWatchLogsAPI
 	configservice            configserviceiface.ConfigServiceAPI
 	databasemigrationservice databasemigrationserviceiface.DatabaseMigrationServiceAPI
 	dax                      daxiface.DAXAPI

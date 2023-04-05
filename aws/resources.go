@@ -1157,7 +1157,9 @@ func dxGatewayAssociation(ctx context.Context, a *aws, resourceType string, filt
 			return nil, err
 		}
 
-		resources = append(resources, r)
+		if *i.DirectConnectGatewayId != "" {
+		   resources = append(resources, r)
+		}
 	}
 
 	return resources, nil

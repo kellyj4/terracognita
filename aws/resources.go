@@ -968,14 +968,14 @@ func cloudwatchDashboards(ctx context.Context, a *aws, resourceType string, filt
 }
 
 func cloudwatchLogGroup(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
-	dashboards, err := a.awsr.GetDashboards(ctx, nil)
+	logGroup, err := a.awsr.GetLogGroups(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	resources := make([]provider.Resource, 0)
-	for _, i := range dashboards {
-		r, err := initializeResource(a, *i.DashboardArn, resourceType)
+	for _, i := range logGroup {
+		r, err := initializeResource(a, *i.Arn, resourceType)
 		if err != nil {
 			return nil, err
 		}

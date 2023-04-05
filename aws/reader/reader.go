@@ -146,15 +146,23 @@ type Reader interface {
 	// Returned values are commented in the interface doc comment block.
 	GetDirectConnections(ctx context.Context, input *directconnect.DescribeConnectionsInput) ([]*directconnect.Connection, error)
 
-	// GetConnectins returns the Direct Connect connections on the given input
+	// GetVirtualInterfaces returns the Direct Connect private vif&#39;s on the given input
 	// Returned values are commented in the interface doc comment block.
 	GetVirtualInterfaces(ctx context.Context, input *directconnect.DescribeVirtualInterfacesInput) ([]*directconnect.VirtualInterface, error)
 
-	// GetConnectins returns the Direct Connect connections on the given input
+	// GetPublicVirtualInterfaces returns the Direct Connect public vif&#39;s on the given input
 	// Returned values are commented in the interface doc comment block.
 	GetPublicVirtualInterfaces(ctx context.Context, input *directconnect.DescribeVirtualInterfacesInput) ([]*directconnect.VirtualInterface, error)
 
-	// GetDirectoryServiceDirectories returns the Directory Service directorie on the given input
+	// GetDirectConnectGatewayAssociations returns the Direct Connect associations on the given input
+	// Returned values are commented in the interface doc comment block.
+	GetDirectConnectGatewayAssociations(ctx context.Context, input *directconnect.DescribeDirectConnectGatewayAssociationsInput) ([]*directconnect.GatewayAssociation, error)
+
+	// GetLags returns the Direct Connect Lags on the given input
+	// Returned values are commented in the interface doc comment block.
+	GetLags(ctx context.Context, input *directconnect.DescribeLagsInput) ([]*directconnect.Lag, error)
+
+	// GetDirectoryServiceDirectories returns the Directory Service directories on the given input
 	// Returned values are commented in the interface doc comment block.
 	GetDirectoryServiceDirectories(ctx context.Context, input *directoryservice.DescribeDirectoriesInput) ([]*directoryservice.DirectoryDescription, error)
 
@@ -1250,6 +1258,64 @@ func (c *connector) GetPublicVirtualInterfaces(ctx context.Context, input *direc
 		hasNextToken = false
 
 		opt = append(opt, o.VirtualInterfaces...)
+
+	}
+
+	return opt, nil
+}
+
+func (c *connector) GetDirectConnectGatewayAssociations(ctx context.Context, input *directconnect.DescribeDirectConnectGatewayAssociationsInput) ([]*directconnect.GatewayAssociation, error) {
+	if c.svc.directconnect == nil {
+		c.svc.directconnect = directconnect.New(c.svc.session)
+	}
+
+	opt := make([]*directconnect.GatewayAssociation, 0)
+
+	hasNextToken := true
+	for hasNextToken {
+		o, err := c.svc.directconnect.DescribeDirectConnectGatewayAssociationsWithContext(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+		if o.DirectConnectGatewayAssociations == nil {
+			hasNextToken = false
+			continue
+		}
+
+		if input == nil {
+			input = &directconnect.DescribeDirectConnectGatewayAssociationsInput{}
+		}
+		input.NextToken = o.NextToken
+		hasNextToken = o.NextToken != nil
+
+		opt = append(opt, o.DirectConnectGatewayAssociations...)
+
+	}
+
+	return opt, nil
+}
+
+func (c *connector) GetLags(ctx context.Context, input *directconnect.DescribeLagsInput) ([]*directconnect.Lag, error) {
+	if c.svc.directconnect == nil {
+		c.svc.directconnect = directconnect.New(c.svc.session)
+	}
+
+	opt := make([]*directconnect.Lag, 0)
+
+	hasNextToken := true
+	for hasNextToken {
+		o, err := c.svc.directconnect.DescribeLagsWithContext(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+		if o.Lags == nil {
+			hasNextToken = false
+			continue
+		}
+
+		hasNextToken = false
+
+		opt = append(opt, o.Lags...)
 
 	}
 

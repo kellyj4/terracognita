@@ -249,7 +249,7 @@ var (
 			Prefix:          "Describe",
 			Service:         "directconnect",
 			Documentation: `
-			// GetConnectins returns the Direct Connect connections on the given input
+			// GetVirtualInterfaces returns the Direct Connect private vif's on the given input
 			// Returned values are commented in the interface doc comment block.
 			`,
 		},
@@ -260,20 +260,43 @@ var (
 			Prefix:          "Describe",
 			Service:         "directconnect",
 			Documentation: `
-			// GetConnectins returns the Direct Connect connections on the given input
+			// GetPublicVirtualInterfaces returns the Direct Connect public vif's on the given input
 			// Returned values are commented in the interface doc comment block.
 			`,
 		},
-		// directoryservice
 		Function{
-			FnName:          "GetDirectoryServiceDirectories",
-			Entity:          "Directories",
-			FnAttributeList: "DirectoryDescriptions",
-			SingularEntity:  "DirectoryDescription",
+			FnName:          "GetDirectConnectGatewayAssociations",
+			Entity:          "DirectConnectGatewayAssociations",
+			FnOutput:        "directconnect.GatewayAssociation",
 			Prefix:          "Describe",
-			Service:         "directoryservice",
+			Service:         "directconnect",
 			Documentation: `
-			// GetDirectoryServiceDirectories returns the Directory Service directorie on the given input
+			// GetDirectConnectGatewayAssociations returns the Direct Connect associations on the given input
+			// Returned values are commented in the interface doc comment block.
+			`,
+		},
+		Function{
+			HasNotPagination: true,
+			FnName:          "GetLags",
+			Entity:          "Lags",
+			Prefix:          "Describe",
+			Service:         "directconnect",
+			Documentation: `
+			// GetLags returns the Direct Connect Lags on the given input
+			// Returned values are commented in the interface doc comment block.
+			`,
+		},
+
+		// directoryserver
+		Function{
+			FnName:                     "GetDirectoryServiceDirectories",
+			Entity:                     "Directories",
+			FnAttributeList:            "DirectoryDescriptions",
+			SingularEntity:             "DirectoryDescription",
+			Prefix:                     "Describe",
+			Service:                    "directoryservice",
+			Documentation: `
+			// GetDirectoryServiceDirectories returns the Directory Service directories on the given input
 			// Returned values are commented in the interface doc comment block.
 			`,
 		},

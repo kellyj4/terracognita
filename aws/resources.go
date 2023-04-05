@@ -74,7 +74,6 @@ const (
 	DXGateway
 	DXPrivateVirtualInterface
 	DXPublicVirtualInterface
-	DXGatewayAssociation
 	DXLag
 	DynamodbGlobalTable
 	DynamodbTable
@@ -228,7 +227,6 @@ var (
 		DXGateway:                      dxGateways,
 		DXPrivateVirtualInterface:      dxPrivateVirtualInterface,
 		DXPublicVirtualInterface:       dxPublicVirtualInterface,
-		DXGatewayAssociation:           dxGatewayAssociation,
 		DXLag:                          dxLag,
 		DynamodbGlobalTable:            dynamodbGlobalTables,
 		DynamodbTable:                  dynamodbTables,
@@ -1137,27 +1135,6 @@ func dxPublicVirtualInterface(ctx context.Context, a *aws, resourceType string, 
 		}
 
 		if *i.VirtualInterfaceType == "public" {
-		   resources = append(resources, r)
-		}
-	}
-
-	return resources, nil
-}
-
-func dxGatewayAssociation(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
-	dxGatewayAssociation, err := a.awsr.GetDirectConnectGatewayAssociations(ctx, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	resources := make([]provider.Resource, 0)
-	for _, i := range dxGatewayAssociation {
-		r, err := initializeResource(a, *i.DirectConnectGatewayId, resourceType)
-		if err != nil {
-			return nil, err
-		}
-
-		if *i.DirectConnectGatewayId != "" {
 		   resources = append(resources, r)
 		}
 	}

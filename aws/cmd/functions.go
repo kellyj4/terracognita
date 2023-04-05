@@ -265,17 +265,6 @@ var (
 			`,
 		},
 		Function{
-			FnName:          "GetDirectConnectGatewayAssociations",
-			Entity:          "DirectConnectGatewayAssociations",
-			FnOutput:        "directconnect.GatewayAssociation",
-			Prefix:          "Describe",
-			Service:         "directconnect",
-			Documentation: `
-			// GetDirectConnectGatewayAssociations returns the Direct Connect associations on the given input
-			// Returned values are commented in the interface doc comment block.
-			`,
-		},
-		Function{
 			HasNotPagination: true,
 			FnName:          "GetLags",
 			Entity:          "Lags",

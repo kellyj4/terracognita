@@ -723,6 +723,16 @@ var (
 			// Returned values are commented in the interface doc comment block.
 			`,
 		},
+		Function{
+			FnName:  "GetIpamScopes",
+			Entity:  "IpamScopes",
+			Prefix:  "Describe",
+			Service: "ec2",
+			Documentation: `
+			// GetIpamScopes returns the ec2 Ipam Scopes names on the given input
+			// Returned values are commented in the interface doc comment block.
+			`,
+		},
 		// ECS
 		Function{
 			FnName:          "GetECSClustersArns",

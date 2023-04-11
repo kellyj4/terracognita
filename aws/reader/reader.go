@@ -323,6 +323,10 @@ type Reader interface {
 	// Returned values are commented in the interface doc comment block.
 	GetIpamPools(ctx context.Context, input *ec2.DescribeIpamPoolsInput) ([]*ec2.IpamPool, error)
 
+	// GetIpamScopes returns the ec2 Ipam Scopes names on the given input
+	// Returned values are commented in the interface doc comment block.
+	GetIpamScopes(ctx context.Context, input *ec2.DescribeIpamScopesInput) ([]*ec2.IpamScope, error)
+
 	// GetECSClustersArns returns the ecs clusters arns on the given input
 	// Returned values are commented in the interface doc comment block.
 	GetECSClustersArns(ctx context.Context, input *ecs.ListClustersInput) ([]*string, error)
@@ -2545,6 +2549,37 @@ func (c *connector) GetIpamPools(ctx context.Context, input *ec2.DescribeIpamPoo
 		hasNextToken = o.NextToken != nil
 
 		opt = append(opt, o.IpamPools...)
+
+	}
+
+	return opt, nil
+}
+
+func (c *connector) GetIpamScopes(ctx context.Context, input *ec2.DescribeIpamScopesInput) ([]*ec2.IpamScope, error) {
+	if c.svc.ec2 == nil {
+		c.svc.ec2 = ec2.New(c.svc.session)
+	}
+
+	opt := make([]*ec2.IpamScope, 0)
+
+	hasNextToken := true
+	for hasNextToken {
+		o, err := c.svc.ec2.DescribeIpamScopesWithContext(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+		if o.IpamScopes == nil {
+			hasNextToken = false
+			continue
+		}
+
+		if input == nil {
+			input = &ec2.DescribeIpamScopesInput{}
+		}
+		input.NextToken = o.NextToken
+		hasNextToken = o.NextToken != nil
+
+		opt = append(opt, o.IpamScopes...)
 
 	}
 

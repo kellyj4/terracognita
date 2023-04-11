@@ -191,6 +191,7 @@ const (
 	VPCEndpoint
 	VPCIpam
 	VPCIpamPool
+	VPCIpamScope
 	VPCPeeringConnection
 	VPNGateway
 )
@@ -342,6 +343,7 @@ var (
 		VPCEndpoint:                  vpcEndpoints,
 	    VPCIpam:                      vpcIpam,
 	    VPCIpamPool:                  vpcIpamPool,
+	    VPCIpamScope:                 vpcIpamScope,
 		VPNGateway:                   vpnGateways,
 	}
 )
@@ -3531,13 +3533,13 @@ func vpcdhcpOptions(ctx context.Context, a *aws, resourceType string, filters *f
 
 func vpcIpam(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
 
-	dhcpOption, err := a.awsr.GetIpams(ctx, nil)
+	vpcIpam, err := a.awsr.GetIpams(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	resources := make([]provider.Resource, 0)
-	for _, v := range dhcpOption {
+	for _, v := range vpcIpam {
 		r, err := initializeResource(a, *v.IpamId, resourceType)
 		if err != nil {
 			return nil, err
@@ -3550,14 +3552,34 @@ func vpcIpam(ctx context.Context, a *aws, resourceType string, filters *filter.F
 
 func vpcIpamPool(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
 
-	dhcpOption, err := a.awsr.GetIpamPools(ctx, nil)
+	ipamPool, err := a.awsr.GetIpamPools(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	resources := make([]provider.Resource, 0)
-	for _, v := range dhcpOption {
+	for _, v := range ipamPool {
 		r, err := initializeResource(a, *v.IpamPoolId, resourceType)
+		if err != nil {
+			return nil, err
+		}
+		resources = append(resources, r)
+	}
+
+	return resources, nil
+}
+
+func vpcIpamScope(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+
+	ipamScopes, err := a.awsr.GetIpamScopes(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resources := make([]provider.Resource, 0)
+	for _, v := range ipamScopes {
+		r, err := initializeResource(a, *v.IpamScopeId, resourceType)
+
 		if err != nil {
 			return nil, err
 		}

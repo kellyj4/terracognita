@@ -409,6 +409,41 @@ func cacheTransitGatewayRouteTables(ctx context.Context, a *aws, rt string, filt
 	return rs, nil
 }
 
+func cacheCloudWatchLogGroups(ctx context.Context, a *aws, rt string, filters *filter.Filter) ([]provider.Resource, error) {
+	rs, err := a.cache.Get(rt)
+	if err != nil {
+		if errors.Cause(err) != errcode.ErrCacheKeyNotFound {
+			return nil, errors.WithStack(err)
+		}
+
+		rs, err = cloudwatchLogGroup(ctx, a, rt, filters)
+		if err != nil {
+			return nil, err
+		}
+
+		err = a.cache.Set(rt, rs)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return rs, nil
+}
+
+func getLogStreams(ctx context.Context, a *aws, rt string, filters *filter.Filter) ([]string, error) {
+	rs, err := cacheCloudWatchLogGroups(ctx, a, rt, filters)
+	if err != nil {
+		return nil, err
+	}
+
+	names := make([]string, 0, len(rs))
+	for _, i := range rs {
+		names = append(names, i.Name())
+	}
+
+	return names, nil
+}
+
 func getTransitGatewayRouteTablesIDs(ctx context.Context, a *aws, rt string, filters *filter.Filter) ([]string, error) {
 	rs, err := cacheTransitGatewayRouteTables(ctx, a, rt, filters)
 	if err != nil {

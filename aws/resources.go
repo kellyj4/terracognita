@@ -9,6 +9,7 @@ import (
 	awsSDK "github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/apigateway"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
+	"github.com/aws/aws-sdk-go/service/cloudwatchlogs"
 	"github.com/aws/aws-sdk-go/service/dax"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/ecs"
@@ -66,6 +67,7 @@ const (
 	CloudwatchMetricAlarm
 	CloudwatchDashboard
 	CloudwatchLogGroup
+	CloudwatchLogStream
 	DaxCluster
 	DBInstance
 	DBParameterGroup
@@ -222,6 +224,7 @@ var (
 		CloudwatchMetricAlarm:          cloudwatchMetricAlarms,
 		CloudwatchDashboard:            cloudwatchDashboards,
 	    CloudwatchLogGroup:             cloudwatchLogGroup,
+	    CloudwatchLogStream:            cloudwatchLogStream,
 		DaxCluster:                     daxClusters,
 		DBInstance:                     dbInstances,
 		DBParameterGroup:               dbParameterGroups,
@@ -977,7 +980,7 @@ func cloudwatchLogGroup(ctx context.Context, a *aws, resourceType string, filter
 
 	resources := make([]provider.Resource, 0)
 	for _, i := range logGroup {
-		r, err := initializeResource(a, *i.Arn, resourceType)
+		r, err := initializeResource(a, *i.LogGroupName, resourceType)
 		if err != nil {
 			return nil, err
 		}
@@ -986,6 +989,37 @@ func cloudwatchLogGroup(ctx context.Context, a *aws, resourceType string, filter
 	}
 
 	return resources, nil
+}
+
+func cloudwatchLogStream(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+    cloudLogGroup, err := getLogStreams(ctx, a, CloudwatchLogGroup.String(), filters)
+
+	if err != nil {
+		return nil, err
+	}
+
+	resources := make([]provider.Resource, 0)
+
+	for _, logGroupNames := range cloudLogGroup {
+		  input := &cloudwatchlogs.DescribeLogStreamsInput {
+          LogGroupName: awsSDK.String(logGroupNames),
+		}
+	    logStream, err := a.awsr.GetLogStreams(ctx, input)
+     	if err != nil {
+		   return nil, err
+	    }
+
+	for _, i := range logStream {
+		r, err := initializeResource(a, fmt.Sprintf("%s", logGroupNames, *i.LogStreamName), resourceType)
+		if err != nil {
+			return nil, err
+		}
+		resources = append(resources, r)
+	}
+}
+
+	return resources, nil
+
 }
 
 func daxClusters(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {

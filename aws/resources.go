@@ -66,7 +66,6 @@ const (
 	CloudwatchMetricAlarm
 	CloudwatchDashboard
 	CloudwatchLogGroup
-	CloudwatchLogStream
 	DaxCluster
 	DBInstance
 	DBParameterGroup
@@ -223,7 +222,6 @@ var (
 		CloudwatchMetricAlarm:          cloudwatchMetricAlarms,
 		CloudwatchDashboard:            cloudwatchDashboards,
 	    CloudwatchLogGroup:             cloudwatchLogGroup,
-	    CloudwatchLogStream:            cloudwatchLogStream,
 		DaxCluster:                     daxClusters,
 		DBInstance:                     dbInstances,
 		DBParameterGroup:               dbParameterGroups,
@@ -980,25 +978,6 @@ func cloudwatchLogGroup(ctx context.Context, a *aws, resourceType string, filter
 	resources := make([]provider.Resource, 0)
 	for _, i := range logGroup {
 		r, err := initializeResource(a, *i.Arn, resourceType)
-		if err != nil {
-			return nil, err
-		}
-
-		resources = append(resources, r)
-	}
-
-	return resources, nil
-}
-
-func cloudwatchLogStream(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
-	logStreams, err := a.awsr.GetLogStreams(ctx, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	resources := make([]provider.Resource, 0)
-	for _, i := range logStreams {
-		r, err := initializeResource(a, *i.LogStreamName, resourceType)
 		if err != nil {
 			return nil, err
 		}

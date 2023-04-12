@@ -209,16 +209,6 @@ var (
 			// Returned values are commented in the interface doc comment block.
 			`,
 		},
-		Function{
-			FnName:          "GetLogStreams",
-			Entity:          "LogStreams",
-			Prefix:          "Describe",
-			Service:         "cloudwatchlogs",
-			Documentation: `
-			// GetLogStreams returns all cloudwatchlog streams based on the input given.
-			// Returned values are commented in the interface doc comment block.
-			`,
-		},
 
 		// configservice
 		Function{

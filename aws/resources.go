@@ -998,7 +998,7 @@ func cloudwatchLogStream(ctx context.Context, a *aws, resourceType string, filte
 
 	resources := make([]provider.Resource, 0)
 	for _, i := range logStreams {
-		r, err := initializeResource(a, *i.Arn, resourceType)
+		r, err := initializeResource(a, *i.LogStreamName, resourceType)
 		if err != nil {
 			return nil, err
 		}

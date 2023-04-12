@@ -992,7 +992,7 @@ func cloudwatchLogGroup(ctx context.Context, a *aws, resourceType string, filter
 }
 
 func cloudwatchLogStream(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
-    cloudLogGroup, err := getLogStreams(ctx, a, CloudwatchLogGroup.String(), filters)
+    cloudLogGroup, err := getLogGroup(ctx, a, CloudwatchLogGroup.String(), filters)
 
 	if err != nil {
 		return nil, err
@@ -1010,7 +1010,7 @@ func cloudwatchLogStream(ctx context.Context, a *aws, resourceType string, filte
 	    }
 
 	for _, i := range logStream {
-		r, err := initializeResource(a, fmt.Sprintf("%s", logGroupNames, *i.LogStreamName), resourceType)
+		r, err := initializeResource(a, fmt.Sprintf("%s_%s", logGroupNames, *i.LogStreamName), resourceType)
 		if err != nil {
 			return nil, err
 		}

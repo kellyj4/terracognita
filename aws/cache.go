@@ -430,7 +430,7 @@ func cacheCloudWatchLogGroups(ctx context.Context, a *aws, rt string, filters *f
 	return rs, nil
 }
 
-func getLogStreams(ctx context.Context, a *aws, rt string, filters *filter.Filter) ([]string, error) {
+func getLogGroup(ctx context.Context, a *aws, rt string, filters *filter.Filter) ([]string, error) {
 	rs, err := cacheCloudWatchLogGroups(ctx, a, rt, filters)
 	if err != nil {
 		return nil, err
@@ -438,7 +438,7 @@ func getLogStreams(ctx context.Context, a *aws, rt string, filters *filter.Filte
 
 	names := make([]string, 0, len(rs))
 	for _, i := range rs {
-		names = append(names, i.Name())
+		names = append(names, i.ID())
 	}
 
 	return names, nil

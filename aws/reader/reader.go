@@ -136,6 +136,10 @@ type Reader interface {
 	// Returned values are commented in the interface doc comment block.
 	GetLogGroups(ctx context.Context, input *cloudwatchlogs.DescribeLogGroupsInput) ([]*cloudwatchlogs.LogGroup, error)
 
+	// GetLogStreams returns all cloudwatchlog streams based on the input given.
+	// Returned values are commented in the interface doc comment block.
+	GetLogStreams(ctx context.Context, input *cloudwatchlogs.DescribeLogStreamsInput) ([]*cloudwatchlogs.LogStream, error)
+
 	// GetRecordedResourceCounts returns counts of the AWS resources which have
 	// been recorded by AWS Config.
 	// See https://docs.aws.amazon.com/config/latest/APIReference/API_GetDiscoveredResourceCounts.html
@@ -1155,6 +1159,37 @@ func (c *connector) GetLogGroups(ctx context.Context, input *cloudwatchlogs.Desc
 		hasNextToken = o.NextToken != nil
 
 		opt = append(opt, o.LogGroups...)
+
+	}
+
+	return opt, nil
+}
+
+func (c *connector) GetLogStreams(ctx context.Context, input *cloudwatchlogs.DescribeLogStreamsInput) ([]*cloudwatchlogs.LogStream, error) {
+	if c.svc.cloudwatchlogs == nil {
+		c.svc.cloudwatchlogs = cloudwatchlogs.New(c.svc.session)
+	}
+
+	opt := make([]*cloudwatchlogs.LogStream, 0)
+
+	hasNextToken := true
+	for hasNextToken {
+		o, err := c.svc.cloudwatchlogs.DescribeLogStreamsWithContext(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+		if o.LogStreams == nil {
+			hasNextToken = false
+			continue
+		}
+
+		if input == nil {
+			input = &cloudwatchlogs.DescribeLogStreamsInput{}
+		}
+		input.NextToken = o.NextToken
+		hasNextToken = o.NextToken != nil
+
+		opt = append(opt, o.LogStreams...)
 
 	}
 

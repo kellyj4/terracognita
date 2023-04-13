@@ -1205,7 +1205,7 @@ func dxGatewayAssociations(ctx context.Context, a *aws, resourceType string, fil
 		}
 
 	    for _, i := range gatewayAssociations {
-		r, err := initializeResource(a, fmt.Sprintf("%s/%s", gatewayID, *i.DirectConnectGatewayId), resourceType)
+		r, err := initializeResource(a, fmt.Sprintf("%s_%s", gatewayID, *i.DirectConnectGatewayId), resourceType)
 		if err != nil {
 			return nil, err
 		}

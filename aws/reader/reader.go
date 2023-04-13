@@ -136,10 +136,6 @@ type Reader interface {
 	// Returned values are commented in the interface doc comment block.
 	GetLogGroups(ctx context.Context, input *cloudwatchlogs.DescribeLogGroupsInput) ([]*cloudwatchlogs.LogGroup, error)
 
-	// GetLogStreams returns all cloudwatchlog groups based on the input given.
-	// Returned values are commented in the interface doc comment block.
-	GetLogStreams(ctx context.Context, input *cloudwatchlogs.DescribeLogStreamsInput) ([]*cloudwatchlogs.LogStream, error)
-
 	// GetRecordedResourceCounts returns counts of the AWS resources which have
 	// been recorded by AWS Config.
 	// See https://docs.aws.amazon.com/config/latest/APIReference/API_GetDiscoveredResourceCounts.html
@@ -155,6 +151,10 @@ type Reader interface {
 	// Returned values are commented in the interface doc comment block.
 	GetDirectConnectGateways(ctx context.Context, input *directconnect.DescribeDirectConnectGatewaysInput) ([]*directconnect.Gateway, error)
 
+	// GetDirectConnectGatewayAssociations returns the Direct Connect gateway Associatoins on the given input
+	// Returned values are commented in the interface doc comment block.
+	GetDirectConnectGatewayAssociations(ctx context.Context, input *directconnect.DescribeDirectConnectGatewayAssociationsInput) ([]*directconnect.GatewayAssociation, error)
+
 	// GetConnectins returns the Direct Connect connections on the given input
 	// Returned values are commented in the interface doc comment block.
 	GetDirectConnections(ctx context.Context, input *directconnect.DescribeConnectionsInput) ([]*directconnect.Connection, error)
@@ -166,6 +166,10 @@ type Reader interface {
 	// GetPublicVirtualInterfaces returns the Direct Connect public vif&#39;s on the given input
 	// Returned values are commented in the interface doc comment block.
 	GetPublicVirtualInterfaces(ctx context.Context, input *directconnect.DescribeVirtualInterfacesInput) ([]*directconnect.VirtualInterface, error)
+
+	// GetVirtualGateways returns the directconnect Virtual Gateways on the given input
+	// Returned values are commented in the interface doc comment block.
+	GetVirtualGateways(ctx context.Context, input *directconnect.DescribeVirtualGatewaysInput) ([]*directconnect.VirtualGateway, error)
 
 	// GetLags returns the Direct Connect Lags on the given input
 	// Returned values are commented in the interface doc comment block.
@@ -1165,37 +1169,6 @@ func (c *connector) GetLogGroups(ctx context.Context, input *cloudwatchlogs.Desc
 	return opt, nil
 }
 
-func (c *connector) GetLogStreams(ctx context.Context, input *cloudwatchlogs.DescribeLogStreamsInput) ([]*cloudwatchlogs.LogStream, error) {
-	if c.svc.cloudwatchlogs == nil {
-		c.svc.cloudwatchlogs = cloudwatchlogs.New(c.svc.session)
-	}
-
-	opt := make([]*cloudwatchlogs.LogStream, 0)
-
-	hasNextToken := true
-	for hasNextToken {
-		o, err := c.svc.cloudwatchlogs.DescribeLogStreamsWithContext(ctx, input)
-		if err != nil {
-			return nil, err
-		}
-		if o.LogStreams == nil {
-			hasNextToken = false
-			continue
-		}
-
-		if input == nil {
-			input = &cloudwatchlogs.DescribeLogStreamsInput{}
-		}
-		input.NextToken = o.NextToken
-		hasNextToken = o.NextToken != nil
-
-		opt = append(opt, o.LogStreams...)
-
-	}
-
-	return opt, nil
-}
-
 func (c *connector) GetRecordedResourceCounts(ctx context.Context, input *configservice.GetDiscoveredResourceCountsInput) ([]*configservice.ResourceCount, error) {
 	if c.svc.configservice == nil {
 		c.svc.configservice = configservice.New(c.svc.session)
@@ -1289,6 +1262,37 @@ func (c *connector) GetDirectConnectGateways(ctx context.Context, input *directc
 	return opt, nil
 }
 
+func (c *connector) GetDirectConnectGatewayAssociations(ctx context.Context, input *directconnect.DescribeDirectConnectGatewayAssociationsInput) ([]*directconnect.GatewayAssociation, error) {
+	if c.svc.directconnect == nil {
+		c.svc.directconnect = directconnect.New(c.svc.session)
+	}
+
+	opt := make([]*directconnect.GatewayAssociation, 0)
+
+	hasNextToken := true
+	for hasNextToken {
+		o, err := c.svc.directconnect.DescribeDirectConnectGatewayAssociationsWithContext(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+		if o.DirectConnectGatewayAssociations == nil {
+			hasNextToken = false
+			continue
+		}
+
+		if input == nil {
+			input = &directconnect.DescribeDirectConnectGatewayAssociationsInput{}
+		}
+		input.NextToken = o.NextToken
+		hasNextToken = o.NextToken != nil
+
+		opt = append(opt, o.DirectConnectGatewayAssociations...)
+
+	}
+
+	return opt, nil
+}
+
 func (c *connector) GetDirectConnections(ctx context.Context, input *directconnect.DescribeConnectionsInput) ([]*directconnect.Connection, error) {
 	if c.svc.directconnect == nil {
 		c.svc.directconnect = directconnect.New(c.svc.session)
@@ -1364,6 +1368,33 @@ func (c *connector) GetPublicVirtualInterfaces(ctx context.Context, input *direc
 		hasNextToken = false
 
 		opt = append(opt, o.VirtualInterfaces...)
+
+	}
+
+	return opt, nil
+}
+
+func (c *connector) GetVirtualGateways(ctx context.Context, input *directconnect.DescribeVirtualGatewaysInput) ([]*directconnect.VirtualGateway, error) {
+	if c.svc.directconnect == nil {
+		c.svc.directconnect = directconnect.New(c.svc.session)
+	}
+
+	opt := make([]*directconnect.VirtualGateway, 0)
+
+	hasNextToken := true
+	for hasNextToken {
+		o, err := c.svc.directconnect.DescribeVirtualGatewaysWithContext(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+		if o.VirtualGateways == nil {
+			hasNextToken = false
+			continue
+		}
+
+		hasNextToken = false
+
+		opt = append(opt, o.VirtualGateways...)
 
 	}
 

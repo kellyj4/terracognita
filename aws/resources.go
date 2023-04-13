@@ -9,8 +9,9 @@ import (
 	awsSDK "github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/apigateway"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
-	"github.com/aws/aws-sdk-go/service/cloudwatchlogs"
+//	"github.com/aws/aws-sdk-go/service/cloudwatchlogs"
 	"github.com/aws/aws-sdk-go/service/dax"
+	"github.com/aws/aws-sdk-go/service/directconnect"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/ecs"
 	"github.com/aws/aws-sdk-go/service/eks"
@@ -67,7 +68,7 @@ const (
 	CloudwatchMetricAlarm
 	CloudwatchDashboard
 	CloudwatchLogGroup
-	CloudwatchLogStream
+//	CloudwatchLogStream
 	DaxCluster
 	DBInstance
 	DBParameterGroup
@@ -76,6 +77,7 @@ const (
 	DmsReplicationInstance
 	DXConnection
 	DXGateway
+	DXGatewayAssociation
 	DXPrivateVirtualInterface
 	DXPublicVirtualInterface
 	DXLag
@@ -196,6 +198,7 @@ const (
 	VPCIpamScope
 	VPCPeeringConnection
 	VPNGateway
+	VPNGatewayAttachment
 )
 
 type rtFn func(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error)
@@ -224,7 +227,7 @@ var (
 		CloudwatchMetricAlarm:          cloudwatchMetricAlarms,
 		CloudwatchDashboard:            cloudwatchDashboards,
 	    CloudwatchLogGroup:             cloudwatchLogGroup,
-	    CloudwatchLogStream:            cloudwatchLogStream,
+//	    CloudwatchLogStream:            cloudwatchLogStream,
 		DaxCluster:                     daxClusters,
 		DBInstance:                     dbInstances,
 		DBParameterGroup:               dbParameterGroups,
@@ -233,6 +236,7 @@ var (
 		DmsReplicationInstance:         dmsReplicationInstances,
 		DXConnection:                   dxConnection,
 		DXGateway:                      dxGateways,
+		DXGatewayAssociation:           dxGatewayAssociations,
 		DXPrivateVirtualInterface:      dxPrivateVirtualInterface,
 		DXPublicVirtualInterface:       dxPublicVirtualInterface,
 		DXLag:                          dxLag,
@@ -348,6 +352,7 @@ var (
 	    VPCIpamPool:                  vpcIpamPool,
 	    VPCIpamScope:                 vpcIpamScope,
 		VPNGateway:                   vpnGateways,
+		VPNGatewayAttachment:         virtualGatewayAttachments,
 	}
 )
 
@@ -991,6 +996,8 @@ func cloudwatchLogGroup(ctx context.Context, a *aws, resourceType string, filter
 	return resources, nil
 }
 
+/*
+
 func cloudwatchLogStream(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
     cloudLogGroup, err := getLogGroup(ctx, a, CloudwatchLogGroup.String(), filters)
 
@@ -1021,6 +1028,8 @@ func cloudwatchLogStream(ctx context.Context, a *aws, resourceType string, filte
 	return resources, nil
 
 }
+
+*/
 
 func daxClusters(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
 	var input = &dax.DescribeClustersInput{
@@ -1173,6 +1182,35 @@ func dxGateways(ctx context.Context, a *aws, resourceType string, filters *filte
 		}
 
 		resources = append(resources, r)
+	}
+
+	return resources, nil
+}
+
+func dxGatewayAssociations(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+	associatedGatewayID, err := getVirtualPrivateGateways(ctx, a, VPNGatewayAttachment.String(), filters)
+	if err != nil {
+		return nil, err
+	}
+
+	resources := make([]provider.Resource, 0)
+
+	for _, gatewayID := range associatedGatewayID {
+		input := &directconnect.DescribeDirectConnectGatewayAssociationsInput{
+			DirectConnectGatewayId: awsSDK.String(gatewayID),
+		}
+		gatewayAssociations, err := a.awsr.GetDirectConnectGatewayAssociations(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+
+	    for _, i := range gatewayAssociations {
+		r, err := initializeResource(a, fmt.Sprintf("%s_%S", gatewayID, *i.DirectConnectGatewayId), resourceType)
+		if err != nil {
+			return nil, err
+		}
+		resources = append(resources, r)
+	}
 	}
 
 	return resources, nil
@@ -3636,6 +3674,25 @@ func vpnGateways(ctx context.Context, a *aws, resourceType string, filters *filt
 	resources := make([]provider.Resource, 0)
 	for _, i := range vpnGateways {
 		r, err := initializeResource(a, *i.VpnGatewayId, resourceType)
+		if err != nil {
+			return nil, err
+		}
+		resources = append(resources, r)
+	}
+
+	return resources, nil
+}
+
+func virtualGatewayAttachments(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+
+	vpnGateways, err := a.awsr.GetVirtualGateways(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resources := make([]provider.Resource, 0)
+	for _, i := range vpnGateways {
+		r, err := initializeResource(a, *i.VirtualGatewayId, resourceType)
 		if err != nil {
 			return nil, err
 		}

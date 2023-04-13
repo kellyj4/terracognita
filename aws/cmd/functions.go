@@ -209,7 +209,7 @@ var (
 			// Returned values are commented in the interface doc comment block.
 			`,
 		},
-		Function{
+/*		Function{
 			FnName:          "GetLogStreams",
 			Entity:          "LogStreams",
 			Prefix:          "Describe",
@@ -219,7 +219,7 @@ var (
 			// Returned values are commented in the interface doc comment block.
 			`,
 		},
-
+*/
 		// configservice
 		Function{
 			FnName:          "GetRecordedResourceCounts",
@@ -264,6 +264,17 @@ var (
 			`,
 		},
 		Function{
+			FnName:          "GetDirectConnectGatewayAssociations",
+			Entity:          "DirectConnectGatewayAssociations",
+			SingularEntity:  "GatewayAssociation",
+			Prefix:          "Describe",
+			Service:         "directconnect",
+			Documentation: `
+			// GetDirectConnectGatewayAssociations returns the Direct Connect gateway Associatoins on the given input
+			// Returned values are commented in the interface doc comment block.
+			`,
+		},
+		Function{
 			HasNotPagination: true,
 			FnName:          "GetDirectConnections",
 			Entity:          "Connections",
@@ -293,6 +304,19 @@ var (
 			Service:         "directconnect",
 			Documentation: `
 			// GetPublicVirtualInterfaces returns the Direct Connect public vif's on the given input
+			// Returned values are commented in the interface doc comment block.
+			`,
+		},
+		Function{
+			HasNotPagination: true,
+			FnName:           "GetVirtualGateways",
+			Entity:           "VirtualGateways",
+			FnAttributeList:  "VirtualGateways",
+			SingularEntity:   "VirtualGateway",
+			Prefix:           "Describe",
+			Service:          "directconnect",
+			Documentation: `
+			// GetVirtualGateways returns the directconnect Virtual Gateways on the given input
 			// Returned values are commented in the interface doc comment block.
 			`,
 		},

@@ -409,6 +409,28 @@ func cacheTransitGatewayRouteTables(ctx context.Context, a *aws, rt string, filt
 	return rs, nil
 }
 
+func getTransitGatewayRouteTablesIDs(ctx context.Context, a *aws, rt string, filters *filter.Filter) ([]string, error) {
+	rs, err := cacheTransitGatewayRouteTables(ctx, a, rt, filters)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get the actual needed value
+	// TODO cach this result too
+	ids := make([]string, 0, len(rs))
+	for _, i := range rs {
+		ids = append(ids, i.ID())
+	}
+
+	return ids, nil
+}
+
+/*
+
+//
+// Getting Rate limited due to AWS only allowing 5 transactions a second
+//
+
 func cacheCloudWatchLogGroups(ctx context.Context, a *aws, rt string, filters *filter.Filter) ([]provider.Resource, error) {
 	rs, err := a.cache.Get(rt)
 	if err != nil {
@@ -444,18 +466,39 @@ func getLogGroup(ctx context.Context, a *aws, rt string, filters *filter.Filter)
 	return names, nil
 }
 
-func getTransitGatewayRouteTablesIDs(ctx context.Context, a *aws, rt string, filters *filter.Filter) ([]string, error) {
-	rs, err := cacheTransitGatewayRouteTables(ctx, a, rt, filters)
+*/
+
+func cacheVirtualPrivateGateway(ctx context.Context, a *aws, rt string, filters *filter.Filter) ([]provider.Resource, error) {
+	rs, err := a.cache.Get(rt)
+	if err != nil {
+		if errors.Cause(err) != errcode.ErrCacheKeyNotFound {
+			return nil, errors.WithStack(err)
+		}
+
+		rs, err = dxGateways(ctx, a, rt, filters)
+		if err != nil {
+			return nil, err
+		}
+
+		err = a.cache.Set(rt, rs)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return rs, nil
+}
+
+func getVirtualPrivateGateways(ctx context.Context, a *aws, rt string, filters *filter.Filter) ([]string, error) {
+	rs, err := cacheVirtualPrivateGateway(ctx, a, rt, filters)
 	if err != nil {
 		return nil, err
 	}
 
-	// Get the actual needed value
-	// TODO cach this result too
-	ids := make([]string, 0, len(rs))
+	names := make([]string, 0, len(rs))
 	for _, i := range rs {
-		ids = append(ids, i.ID())
+		names = append(names, i.ID())
 	}
 
-	return ids, nil
+	return names, nil
 }

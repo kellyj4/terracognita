@@ -475,7 +475,7 @@ func cacheVirtualPrivateGateway(ctx context.Context, a *aws, rt string, filters 
 			return nil, errors.WithStack(err)
 		}
 
-		rs, err = vpnGateways(ctx, a, rt, filters)
+		rs, err = dxGateways(ctx, a, rt, filters)
 		if err != nil {
 			return nil, err
 		}

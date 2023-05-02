@@ -1646,7 +1646,27 @@ var (
 			// Returned values are commented in the interface doc comment block.
 			`,
 		},
-
+		Function{
+			Entity:  "ResolverConfigs",
+			Prefix:  "List",
+			FnOutput: "route53resolver.ResolverConfig",
+			Service: "route53resolver",
+			Documentation: `
+			// GetResolverConfigs returns the Route53Resolver Config on the given input
+			// Returned values are commented in the interface doc comment block.
+			`,
+		},
+		Function{
+			Entity:  "ResolverEndpointIpAddresses",
+			Prefix:  "List",
+			FnOutput: "route53resolver.IpAddressResponse",
+			FnAttributeList: "IpAddresses",
+			Service: "route53resolver",
+			Documentation: `
+			// GetResolverEndpointIpAddresses returns the Route53Resolver ResolverEndpointIpAddresses on the given input
+			// Returned values are commented in the interface doc comment block.
+			`,
+		},
 		// route53resolver
 		Function{
 			Entity:  "ResolverEndpoints",

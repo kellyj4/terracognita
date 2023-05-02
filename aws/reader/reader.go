@@ -611,6 +611,14 @@ type Reader interface {
 	// Returned values are commented in the interface doc comment block.
 	GetVPCAssociationAuthorizations(ctx context.Context, input *route53.ListVPCAssociationAuthorizationsInput) ([]*route53.VPC, error)
 
+	// GetResolverConfigs returns the Route53Resolver Config on the given input
+	// Returned values are commented in the interface doc comment block.
+	GetResolverConfigs(ctx context.Context, input *route53resolver.ListResolverConfigsInput) ([]*route53resolver.ResolverConfig, error)
+
+	// GetResolverEndpointIpAddresses returns the Route53Resolver ResolverEndpointIpAddresses on the given input
+	// Returned values are commented in the interface doc comment block.
+	GetResolverEndpointIpAddresses(ctx context.Context, input *route53resolver.ListResolverEndpointIpAddressesInput) ([]*route53resolver.IpAddressResponse, error)
+
 	// GetResolverEndpoints returns the Route53Resolver ResolverEndpoints on the given input
 	// Returned values are commented in the interface doc comment block.
 	GetResolverEndpoints(ctx context.Context, input *route53resolver.ListResolverEndpointsInput) ([]*route53resolver.ResolverEndpoint, error)
@@ -4713,6 +4721,68 @@ func (c *connector) GetVPCAssociationAuthorizations(ctx context.Context, input *
 		hasNextToken = o.NextToken != nil
 
 		opt = append(opt, o.VPCs...)
+
+	}
+
+	return opt, nil
+}
+
+func (c *connector) GetResolverConfigs(ctx context.Context, input *route53resolver.ListResolverConfigsInput) ([]*route53resolver.ResolverConfig, error) {
+	if c.svc.route53resolver == nil {
+		c.svc.route53resolver = route53resolver.New(c.svc.session)
+	}
+
+	opt := make([]*route53resolver.ResolverConfig, 0)
+
+	hasNextToken := true
+	for hasNextToken {
+		o, err := c.svc.route53resolver.ListResolverConfigsWithContext(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+		if o.ResolverConfigs == nil {
+			hasNextToken = false
+			continue
+		}
+
+		if input == nil {
+			input = &route53resolver.ListResolverConfigsInput{}
+		}
+		input.NextToken = o.NextToken
+		hasNextToken = o.NextToken != nil
+
+		opt = append(opt, o.ResolverConfigs...)
+
+	}
+
+	return opt, nil
+}
+
+func (c *connector) GetResolverEndpointIpAddresses(ctx context.Context, input *route53resolver.ListResolverEndpointIpAddressesInput) ([]*route53resolver.IpAddressResponse, error) {
+	if c.svc.route53resolver == nil {
+		c.svc.route53resolver = route53resolver.New(c.svc.session)
+	}
+
+	opt := make([]*route53resolver.IpAddressResponse, 0)
+
+	hasNextToken := true
+	for hasNextToken {
+		o, err := c.svc.route53resolver.ListResolverEndpointIpAddressesWithContext(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+		if o.IpAddresses == nil {
+			hasNextToken = false
+			continue
+		}
+
+		if input == nil {
+			input = &route53resolver.ListResolverEndpointIpAddressesInput{}
+		}
+		input.NextToken = o.NextToken
+		hasNextToken = o.NextToken != nil
+
+		opt = append(opt, o.IpAddresses...)
 
 	}
 

@@ -166,6 +166,7 @@ const (
 	Route53HealthCheck
 	Route53QueryLog
 	Route53Record
+	Route53ResolverRule 
 	Route53ResolverConfig
 	Route53ResolverIpAddresses
 	Route53ResolverEndpoint
@@ -324,6 +325,7 @@ var (
 		Route53HealthCheck:                         route53HealthChecks,
 		Route53QueryLog:                            route53QueryLogs,
 		Route53Record:                              route53Records,
+		Route53ResolverRule:                        route53ResolverRules,
 		Route53ResolverConfig:                      route53ResolverConfigs,
 		Route53ResolverIpAddresses:                 route53ResolverIpAddresses,
 		Route53ResolverEndpoint:                    route53ResolverEndpoints,
@@ -3096,6 +3098,24 @@ func route53ResolverIpAddresses(ctx context.Context, a *aws, resourceType string
 	resources := make([]provider.Resource, 0)
 	for _, i := range resolverEndpointIpAddresses {
 		r, err := initializeResource(a, *i.Ip, resourceType)
+		if err != nil {
+			return nil, err
+		}
+		resources = append(resources, r)
+	}
+
+	return resources, nil
+}
+
+func route53ResolverRules(ctx context.Context, a *aws, resourceType string, filters *filter.Filter) ([]provider.Resource, error) {
+	resolverRule, err := a.awsr.GetResolverRules(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resources := make([]provider.Resource, 0)
+	for _, i := range resolverRule {
+		r, err := initializeResource(a, *i.Id, resourceType)
 		if err != nil {
 			return nil, err
 		}

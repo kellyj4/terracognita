@@ -3113,7 +3113,7 @@ func route53ResolverConfigs(ctx context.Context, a *aws, resourceType string, fi
 
 	resources := make([]provider.Resource, 0)
 	for _, i := range resolverConfigs {
-		r, err := initializeResource(a, *i.Id, resourceType)
+		r, err := initializeResource(a, *i.ResourceId, resourceType)
 		if err != nil {
 			return nil, err
 		}

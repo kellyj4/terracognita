@@ -3115,7 +3115,7 @@ func route53ResolverRules(ctx context.Context, a *aws, resourceType string, filt
 
 	resources := make([]provider.Resource, 0)
 	for _, i := range resolverRule {
-		r, err := initializeResource(a, *i.Id, resourceType)
+		r, err := initializeResource(a, *i.DomainName, resourceType)
 		if err != nil {
 			return nil, err
 		}

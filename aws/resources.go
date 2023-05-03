@@ -166,6 +166,7 @@ const (
 	Route53HealthCheck
 	Route53QueryLog
 	Route53Record
+	Route53ResolverConfig
 	Route53ResolverIpAddresses
 	Route53ResolverEndpoint
 	Route53ResolverRuleAssociation
@@ -323,6 +324,7 @@ var (
 		Route53HealthCheck:                         route53HealthChecks,
 		Route53QueryLog:                            route53QueryLogs,
 		Route53Record:                              route53Records,
+		Route53ResolverConfig:                      route53ResolverConfigs,
 		Route53ResolverIpAddresses:                 route53ResolverIpAddresses,
 		Route53ResolverEndpoint:                    route53ResolverEndpoints,
 		Route53ResolverRuleAssociation:             route53ResolverRuleAssociation,

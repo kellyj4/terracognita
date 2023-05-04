@@ -619,7 +619,7 @@ type Reader interface {
 	// Returned values are commented in the interface doc comment block.
 	GetResolverEndpointIpAddresses(ctx context.Context, input *route53resolver.ListResolverEndpointIpAddressesInput) ([]*route53resolver.IpAddressResponse, error)
 
-	// GetResolverEndpoints returns the Route53Resolver ResolverEndpoints on the given input
+	// GetResolverEndpoint returns the Route53Resolver ResolverEndpoint on the given input
 	// Returned values are commented in the interface doc comment block.
 	GetResolverEndpoints(ctx context.Context, input *route53resolver.ListResolverEndpointsInput) ([]*route53resolver.ResolverEndpoint, error)
 

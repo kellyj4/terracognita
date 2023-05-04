@@ -1673,7 +1673,7 @@ var (
 			Prefix:  "List",
 			Service: "route53resolver",
 			Documentation: `
-			// GetResolverEndpoints returns the Route53Resolver ResolverEndpoints on the given input
+			// GetResolverEndpoint returns the Route53Resolver ResolverEndpoint on the given input
 			// Returned values are commented in the interface doc comment block.
 			`,
 		},
